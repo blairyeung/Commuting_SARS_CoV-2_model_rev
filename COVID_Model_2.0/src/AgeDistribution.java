@@ -2,21 +2,7 @@ import java.util.Random;
 
 public class AgeDistribution {
 
-    public static void main(String[] args) {
-        IO io = new IO();
-        double Imm[] = new double[16];
-        for (int i = 0; i < 16; i++) {
-            Imm[i] = 1.0;
-        }
-        GetPatientArray(1,10, Imm,1.0,0,0, false, new double[1][1][1],1);
-    }
-
-    public static double[] getPatientArrayfromArrayResident(double Patients_By_Age[], double[] ImmunityMatrix,double constant, int Variant_Code, double[][][] Mats, int level){
-
-        return new double[16];
-    }
-
-    public static double[] getPatientArrayfromArray(double Patients_By_Age[], double[] ImmunityMatrix,double constant, int Variant_Code, double[][][] Mats, int level, int Mode){
+    public static double[] getNew_Incidence(double Patients_By_Age[], double[] ImmunityMatrix, int Variant_Code, double[][][] Mats, int level, int Mode){
         level = 0;
 
         double[] PatientArr = new double[16];
@@ -29,7 +15,6 @@ public class AgeDistribution {
         /**
          * Finish Calculation all at once to increase eff
          */
-        //Mtx = MatrixSynthsis.Synthesis(Mats,Parameters.Scenarios[level]);
         Mtx = MatrixSynthsis.Synthesis_from_preset(Mats,Parameters.Scenarios[level], Mode);
 
         for (int Agebandi = 0; Agebandi < 16; Agebandi++) {

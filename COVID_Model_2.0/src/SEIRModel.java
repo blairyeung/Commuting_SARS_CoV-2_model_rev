@@ -193,7 +193,7 @@ public class SEIRModel{
              * Number of individuals newly infected
              */
 
-            double[] DailyInfectedArray = AgeDistribution.getPatientArrayfromArray(Transmissible, ImmunityMat, 1-FlightConstant, Variant, Mat,Tier, 0);
+            double[] DailyInfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, Variant, Mat,Tier, 0);
 
 
             double Total_Workers;
@@ -434,8 +434,7 @@ public class SEIRModel{
                 Transmissible[Patient_Age_Band] = EffectiveContacter;
             }
 
-            double[] DailyInfectedArray = AgeDistribution.getPatientArrayfromArray(Transmissible, ImmunityMat, 1 - FlightConstant, Variant, Mat, Tier, 1);
-
+            double[] DailyInfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, Variant, Mat, Tier, 1);
 
             for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
 
@@ -602,5 +601,8 @@ public class SEIRModel{
          */
 
         return Immunity_level_by_age_and_category;
+    }
+    public static void set_data_package(){
+        
     }
 }
