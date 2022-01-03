@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 public class PHU {
 
-    public final static int Number_of_PHUs = 34;
-    public static String[] PHUs = new String[Number_of_PHUs];
-    public static ArrayList<String> PHUs_list = new ArrayList<>();
-    public static int[] PHU_by_Division = null;
-    public static ArrayList[] Division_by_PHU = new ArrayList[Number_of_PHUs];
+    public final static int number_of_phu = 34;
+    public static String[] phu_arr = new String[number_of_phu];
+    public static ArrayList<String> phu_list = new ArrayList<>();
+    public static int[] phu_by_division = null;
+    public static ArrayList[] division_by_phu = new ArrayList[number_of_phu];
 
     public static void main(String[] args) {
 
@@ -18,7 +18,7 @@ public class PHU {
 
     public static void PHU_IO_Input(){
         CountyDataIO c = new CountyDataIO();
-        PHU_by_Division = new int[CountyDataIO.DistrictCodes.length];
+        phu_by_division = new int[CountyDataIO.DistrictCodes.length];
         String PHU_file_path = Parameters.ReadPath + "finished version of Public health matching.csv";
         System.out.println(PHU_file_path);
         System.out.println(CountyDataIO.DistrictCodes.length);
@@ -51,23 +51,23 @@ public class PHU {
             String PHU_name = str.substring(0,str.indexOf(","));
             String Division_code =  str.substring(str.indexOf(",")+1);
             int code = Integer.parseInt(Division_code);
-            if(!PHUs_list.contains(PHU_name)){
-                PHUs_list.add(PHU_name);
-                Division_by_PHU[PHUs_list.indexOf(PHU_name)] = new ArrayList<int[]>();
+            if(!phu_list.contains(PHU_name)){
+                phu_list.add(PHU_name);
+                division_by_phu[phu_list.indexOf(PHU_name)] = new ArrayList<int[]>();
             }
-            PHU_by_Division[CountyDataIO.DistrictCode.indexOf(code)] = PHUs_list.indexOf(PHU_name);
-            Division_by_PHU[PHUs_list.indexOf(PHU_name)].add(code);
+            phu_by_division[CountyDataIO.DistrictCode.indexOf(code)] = phu_list.indexOf(PHU_name);
+            division_by_phu[phu_list.indexOf(PHU_name)].add(code);
         }
 
-        PHUs = new String[PHUs_list.size()];
+        phu_arr = new String[phu_list.size()];
 
-        for (int i = 0; i < PHUs_list.size(); i++) {
-            PHUs[i] = PHUs_list.get(i);
+        for (int i = 0; i < phu_list.size(); i++) {
+            phu_arr[i] = phu_list.get(i);
         }
 
-        for (int i = 0; i < PHU_by_Division.length; i++) {
+        for (int i = 0; i < phu_by_division.length; i++) {
             System.out.print(CountyDataIO.DistrictCodes[i]+",");
-            System.out.println(PHUs_list.get(PHU_by_Division[i]));
+            System.out.println(phu_list.get(phu_by_division[i]));
         }
     }
 }

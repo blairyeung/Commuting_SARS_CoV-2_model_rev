@@ -3,14 +3,14 @@ public class Commute_export {
         CountyDataIO.CountyData_IO_Input();
         Commute_IO.Commute_IO_Input();
 
-        int Arriving[] = new int[CountyDataIO.DistrictCodes.length];
+        int Arriving[] = new int[CountyDataIO.district_code_array.length];
 
-        for (int District = 0; District < CountyDataIO.DistrictCodes.length; District++) {
-            for (int county = 0; county < CountyDataIO.Counties_By_District[District].size(); county++) {
+        for (int District = 0; District < CountyDataIO.district_code_array.length; District++) {
+            for (int county = 0; county < CountyDataIO.county_by_district[District].size(); county++) {
                 //System.out.println(CountyDataIO.Code_Index.get(county));
-                Arriving[District] += Commute_IO.getNumber_of_commuters_arriving()[CountyDataIO.Code_Index.indexOf(CountyDataIO.Counties_By_District[District].get(county).getID())];
+                Arriving[District] += Commute_IO.getNumber_of_commuters_arriving()[CountyDataIO.code_index.indexOf(CountyDataIO.county_by_district[District].get(county).getID())];
             }
-            System.out.println(CountyDataIO.DistrictCode.get(District) + "," +Arriving[District]);
+            System.out.println(CountyDataIO.district_code_list.get(District) + "," +Arriving[District]);
         }
         
         for (int i = 0; i < Commute_IO.getNumber_of_commuters_arriving().length; i++) {

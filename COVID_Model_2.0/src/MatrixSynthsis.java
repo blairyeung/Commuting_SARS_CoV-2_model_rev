@@ -44,9 +44,9 @@ public class MatrixSynthsis {
         return Synthesized;
     }
 
-    public static double[][] Synthesis_from_preset(double[][][] Matrices, double[] Parameter, int Mode){
+    public static double[][] Synthesis_from_preset(double[][][] Matrices, double[] Parameter, int time_step){
 
-        double[] Preset = Parameters.TimeMatrix[Mode];
+        double[] Preset = Parameters.TimeMatrix[time_step];
 
         /**
          * For residential transmission (night)
@@ -59,7 +59,7 @@ public class MatrixSynthsis {
         for (int i = 0; i < Matrices.length; i++) {
             for (int i1 = 0; i1 < 16; i1++) {
                 for (int i2 = 0; i2 < 16; i2++) {
-                    Synthesized[i1][i2] += Parameter[i] * Preset[i] * Matrices[i][i1][i2] * Parameters.TimeMatrix[Mode][i];
+                    Synthesized[i1][i2] += Parameter[i] * Preset[i] * Matrices[i][i1][i2] * Parameters.TimeMatrix[time_step][i];
                 }
             }
         }

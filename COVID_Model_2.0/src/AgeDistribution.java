@@ -2,9 +2,7 @@ import java.util.Random;
 
 public class AgeDistribution {
 
-    public static double[] getNew_Incidence(double Patients_By_Age[], double[] ImmunityMatrix, int Variant_Code, double[][][] Mats, int level, int Mode){
-        level = 0;
-
+    public static double[] getNew_Incidence(double Patients_By_Age[], double[] immunity_matrix, int Variant_Code, double[][][] Mats, int Scenario, int time_step){
         double[] PatientArr = new double[16];
         double[] SynthesizedPatientArr = new double[16];
         double[] M = new double[16];
@@ -15,17 +13,17 @@ public class AgeDistribution {
         /**
          * Finish Calculation all at once to increase eff
          */
-        Mtx = MatrixSynthsis.Synthesis_from_preset(Mats,Parameters.Scenarios[level], Mode);
+        Mtx = MatrixSynthsis.Synthesis_from_preset(Mats,Parameters.Scenarios[Scenario], time_step);
 
         for (int Agebandi = 0; Agebandi < 16; Agebandi++) {
             for (int Agebandj = 0; Agebandj < 16; Agebandj++) {
-                M2[Agebandi][Agebandj] = Mtx[Agebandi][Agebandj] * Parameters.LockdownResPro[level] * Parameters.Susceptibility[Agebandi];
+                M2[Agebandi][Agebandj] = Mtx[Agebandi][Agebandj] * Parameters.LockdownResPro[Scenario] * Parameters.Susceptibility[Agebandi];
             }
         }
 
         for (int AgeBand = 0; AgeBand < 16; AgeBand++) {
             for (int AgeBandj = 0; AgeBandj < 16; AgeBandj++) {
-                PatientArr[AgeBandj] =  (0.95 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M2[AgeBand][AgeBandj] * ImmunityMatrix[AgeBandj] * Patients_By_Age[AgeBand] * Parameters.Infectiousness_By_Variant[Variant_Code];
+                PatientArr[AgeBandj] =  (0.95 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M2[AgeBand][AgeBandj] * immunity_matrix[AgeBandj] * Patients_By_Age[AgeBand] * Parameters.Infectiousness_By_Variant[Variant_Code];
                 SynthesizedPatientArr[AgeBandj] += PatientArr[AgeBandj];
             }
         }

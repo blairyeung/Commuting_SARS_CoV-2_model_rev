@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class CountyDataIO {
 
-    public static CountyData[] Counties;
-    public static ArrayList<CountyData>[] Counties_By_District;
-    public static ArrayList<Integer> Code_Index;
-    public static double[][] DistanceBetweenCounties;
+    public static CountyData[] counties;
+    public static ArrayList<CountyData>[] county_by_district;
+    public static ArrayList<Integer> code_index;
+    public static double[][] distance_between_county;
 
-    public static int[] DistrictCodes;
-    public static ArrayList<Integer> DistrictCode = new ArrayList<>();
+    public static int[] district_code_array;
+    public static ArrayList<Integer> district_code_list = new ArrayList<>();
 
     public static void main(String[] args) {
         CountyData_IO_Input();
@@ -21,7 +21,7 @@ public class CountyDataIO {
 
         ArrayList<String> lines = Function.Buffered_IO(Path,true);
         ArrayList<String> Locations = new ArrayList<>();
-        ArrayList<Integer> Counties_ID = new ArrayList<>();
+        ArrayList<Integer> counties_ID = new ArrayList<>();
         ArrayList<Double> Longitudes = new ArrayList<>();
         ArrayList<Double> Latitudes = new ArrayList<>();
         ArrayList<Integer> Populations = new ArrayList<>();
@@ -59,7 +59,7 @@ public class CountyDataIO {
 
             System.out.println("ID: " + ID_int + "  Location: " + Location + "  Longtitude: " + Longitude + "  Latitude: " + Latitude + "  Population: " + Population + "  District: " + District + "  County_Type: " + CountyType);
 
-            Counties_ID.add(ID_int);
+            counties_ID.add(ID_int);
             Locations.add(Location);
             Longitudes.add(Longitude);
             Latitudes.add(Longitude);
@@ -74,58 +74,58 @@ public class CountyDataIO {
 
             /**Add Code*/
 
-            if(!DistrictCode.contains(District)){
-                DistrictCode.add(District);
+            if(!district_code_list.contains(District)){
+                district_code_list.add(District);
             }
 
         }
 
-        DistrictCodes = new int[DistrictCode.size()];
-        Counties_By_District = new ArrayList[DistrictCode.size()];
-        Code_Index = new ArrayList<>();
+        district_code_array = new int[district_code_list.size()];
+        county_by_district = new ArrayList[district_code_list.size()];
+        code_index = new ArrayList<>();
 
-        for (int i = 0; i < DistrictCode.size(); i++) {
-            DistrictCodes[i] = DistrictCode.get(i);
-            Counties_By_District[i] = new ArrayList<CountyData>();
+        for (int i = 0; i < district_code_list.size(); i++) {
+            district_code_array[i] = district_code_list.get(i);
+            county_by_district[i] = new ArrayList<CountyData>();
         }
 
-        Counties = ArrayListToArray.toArray(CountyDataList,Counties);
+        counties = ArrayListToArray.toArray(CountyDataList,counties);
 
-        for (int i1 = 0; i1 < Counties.length; i1++) {
+        for (int i1 = 0; i1 < counties.length; i1++) {
             /**
              * Categorize counties by district
              */
-            int ind = DistrictCode.indexOf(Counties[i1].getDistrict());
-            Counties_By_District[ind].add(Counties[i1]);
+            int ind = district_code_list.indexOf(counties[i1].getDistrict());
+            county_by_district[ind].add(counties[i1]);
         }
 
         /**
          * The List "Locations" will act as an menu/index
          */
 
-        DistanceBetweenCounties = new double[Populations.size()][Populations.size()];
+        distance_between_county = new double[Populations.size()][Populations.size()];
 
         for (int i = 0; i < Populations.size(); i++) {
             for (int i1 = 0; i1 < Populations.size(); i1++) {
                 double distance;
-                double Coord1[] = Counties[i].getCoordinate();
-                double Coord2[] = Counties[i1].getCoordinate();
+                double Coord1[] = counties[i].getCoordinate();
+                double Coord2[] = counties[i1].getCoordinate();
 
-                //System.out.print("Depart: " + Counties[i].getName());
+                //System.out.print("Depart: " + counties[i].getName());
 
-                //System.out.print("    Arrival: " + Counties[i1].getName());
+                //System.out.print("    Arrival: " + counties[i1].getName());
 
                 distance = CartesianDistance(Coord1,Coord2) * Parameters.Kilometers_per_degree;
                 /**
                  * Kilometers_per_degree is a constant
                  */
-                DistanceBetweenCounties[i][i1] = distance;
+                distance_between_county[i][i1] = distance;
 
             }
         }
 
-        for (int i = 0; i < Counties.length; i++) {
-            Code_Index.add(Counties[i].getID());
+        for (int i = 0; i < counties.length; i++) {
+            code_index.add(counties[i].getID());
         }
         Commute.getStaticCommuteMatrix();
     }

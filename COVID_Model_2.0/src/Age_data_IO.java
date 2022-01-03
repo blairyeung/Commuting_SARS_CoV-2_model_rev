@@ -7,36 +7,36 @@
          * Not an IO class
          */
 
-        public static ArrayList[] County_by_PHU = null;
-        public static int[] Population_by_PHU = null;
+        public static ArrayList[] county_by_phu = null;
+        public static int[] population_by_phu = null;
 
         public static void main(String[] args){
             CountyDataIO.CountyData_IO_Input();
             PHU.PHU_IO_Input();
-            County_by_PHU = new ArrayList[PHU.Number_of_PHUs];
-            Population_by_PHU = new int[PHU.Number_of_PHUs];
-            for (int unit = 0; unit < PHU.Number_of_PHUs; unit++) {
-                County_by_PHU[unit] = new ArrayList<County>();
+            county_by_phu = new ArrayList[PHU.number_of_phu];
+            population_by_phu = new int[PHU.number_of_phu];
+            for (int unit = 0; unit < PHU.number_of_phu; unit++) {
+                county_by_phu[unit] = new ArrayList<County>();
             }
             Stratification_by_subdivision();
             Find_incidence_and_death_rate();
         }
 
         public static void Stratification_by_subdivision(){
-            for (int county = 0; county < CountyDataIO.Counties.length; county++) {
-                int Code = CountyDataIO.Counties[county].getDistrict();
-                int Index = CountyDataIO.DistrictCode.indexOf(Code);
-                County_by_PHU[PHU.PHU_by_Division[Index]].add(CountyDataIO.Counties[county]);
+            for (int county = 0; county < CountyDataIO.counties.length; county++) {
+                int Code = CountyDataIO.counties[county].getDistrict();
+                int Index = CountyDataIO.district_code_list.indexOf(Code);
+                county_by_phu[PHU.phu_by_division[Index]].add(CountyDataIO.counties[county]);
             }
 
-            for (int unit = 0; unit < PHU.Number_of_PHUs; unit++) {
+            for (int unit = 0; unit < PHU.number_of_phu; unit++) {
                 int Population_PHU = 0;
-                for (int county_within = 0; county_within < County_by_PHU[unit].size(); county_within++) {
-                    Population_PHU += ((CountyData) County_by_PHU[unit].get(county_within)).getPopulation();
+                for (int county_within = 0; county_within < county_by_phu[unit].size(); county_within++) {
+                    Population_PHU += ((CountyData) county_by_phu[unit].get(county_within)).getPopulation();
                 }
-                System.out.print(PHU.PHUs_list.get(unit)+",");
+                System.out.print(PHU.phu_list.get(unit)+",");
                 System.out.println(Population_PHU);
-                Population_by_PHU[unit] = Population_PHU;
+                population_by_phu[unit] = Population_PHU;
             }
         }
 
@@ -44,7 +44,6 @@
             double per_pop = 100000.0;
 
             ArrayList<String> Lines = new ArrayList<>();
-            ArrayList<String> OutputLines = new ArrayList<>();
 
             String Path = Parameters.ReadPath;
             FileReader read = null;
@@ -95,11 +94,11 @@
                 double Cases = Integer.parseInt(l.substring(0, l.indexOf(",")));
                 double Death = Integer.parseInt(l.substring(l.indexOf(",")+1));
                 System.out.println(unit);
-                int index = PHU.PHUs_list.indexOf(unit);
+                int index = PHU.phu_list.indexOf(unit);
                 System.out.println(index);
-                double incideath_rate = 110 * per_pop * Death/Population_by_PHU[index];
-                double incidence_rate = 1.92 *  per_pop * Cases/Population_by_PHU[index];
-                System.out.println(Population_by_PHU[index]);
+                double incideath_rate = 110 * per_pop * Death/population_by_phu[index];
+                double incidence_rate = 1.92 *  per_pop * Cases/population_by_phu[index];
+                System.out.println(population_by_phu[index]);
                 System.out.println(incideath_rate);
                 System.out.println(incidence_rate);
                 String LINE = Lines.get(i).substring(0, Lines.get(i).indexOf(",")) +"," + unit + "," + incideath_rate + "," + incidence_rate;
@@ -109,7 +108,6 @@
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //OutputLines.add(LINE);
             }
             try {
                 bufferedWriter.close();
