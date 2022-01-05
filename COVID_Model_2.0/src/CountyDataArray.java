@@ -1,55 +1,56 @@
 public class CountyDataArray {
 
     /**
-     * The place where all the data were stored
+     * Object that contains time-series data of a single county
      */
 
-    private Data TimeSeries[];
-    private String CountyName;
-    private int Length;
+    private Data time_series[];
+    private String county_name;
+    private int length;
 
     public CountyDataArray(String Name, int Size){
-        this.CountyName = Name;
-        TimeSeries = new Data[Size];
+        this.county_name = Name;
+        time_series = new Data[Size];
         for (int Date = 0; Date < Size; Date++) {
-            TimeSeries[Date] = new Data();
+            time_series[Date] = new Data();
         }
     }
 
     public CountyDataArray(int Size){
-        TimeSeries = new Data[Size];
-        for (int Date = 0; Date < Size; Date++) {
-            TimeSeries[Date] = new Data();
+        time_series = new Data[Size];
+        for (int date = 0; date < Size; date++) {
+            time_series[date] = new Data();
         }
     }
 
 
     public CountyDataArray() {
-        TimeSeries = new Data[Parameters.Observation_Range];
+        time_series = new Data[Parameters.Observation_Range];
         for (int Date = 0; Date < Parameters.Observation_Range; Date++) {
-            TimeSeries[Date] = new Data();
+            time_series[Date] = new Data();
         }
     }
 
     public void bindTimeSeries(Data CountyData){
-        //System.out.println("Going to bind");
-        //ConsolePrint.PrintCountyInformation(CountyData);
-        //TimeSeries[Main.Day] = CountyData;
-        TimeSeries[Length] = CountyData;
-        Length++;
+        time_series[length] = CountyData;
+        length++;
     }
 
     public int getLength(){
-        return TimeSeries.length;
+        return time_series.length;
     }
 
     public Data[] getTimeSeries(){
-        return TimeSeries;
+        return time_series;
     }
     public void setTimeSeries(Data[] Series){
-        this.TimeSeries = Series;
+        this.time_series = Series;
     }
     public void setDataWithinSeries(int day,Data Data){
-        this.TimeSeries[day] = Data;
+        this.time_series[day] = Data;
+    }
+
+    public String getCounty_name() {
+        return county_name;
     }
 }

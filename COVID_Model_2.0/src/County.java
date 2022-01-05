@@ -25,7 +25,7 @@ public class County extends Thread{
         this.Population = Population;
         this.County_Index = Code;
         County_Data = new Data(Population);
-        Series = new CountyDataArray(CountyDataIO.Counties[Code].getName(),Parameters.Observation_Range);
+        Series = new CountyDataArray(CountyDataIO.counties[Code].getName(),Parameters.Observation_Range);
         Series.setDataWithinSeries(Main.Day, County_Data);
     }
 
@@ -40,7 +40,7 @@ public class County extends Thread{
         this.County_Index = Code;
         this.Past_series = Past_series;
         County_Data = new Data(Population);
-        Series = new CountyDataArray(CountyDataIO.Counties[Code].getName(), Parameters.Observation_Range);
+        Series = new CountyDataArray(CountyDataIO.counties[Code].getName(), Parameters.Observation_Range);
         Series.setDataWithinSeries(Main.Day, County_Data);
     }
 
@@ -56,7 +56,7 @@ public class County extends Thread{
 
         else{
             County_Data = new Data(Population);
-            Series = new CountyDataArray(CountyDataIO.Counties[County_Index].getName(), Parameters.Observation_Range);
+            Series = new CountyDataArray(CountyDataIO.counties[County_Index].getName(), Parameters.Observation_Range);
             Series.setDataWithinSeries(Main.Day, County_Data);
         }
 
@@ -78,7 +78,7 @@ public class County extends Thread{
 
         Series.setDataWithinSeries(Main.Day+1, NewData);
 
-        System.out.print(CountyDataIO.Counties[County_Index].getName() + "    ");
+        System.out.print(CountyDataIO.counties[County_Index].getName() + "    ");
         if(NewData.getDataPack()[2]!=50){
             System.out.print("POP:  "+NewData.getDataPack()[1] + "    ");
             System.out.println(NewData.getDataPack()[2]);

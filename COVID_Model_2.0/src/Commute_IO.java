@@ -5,17 +5,17 @@ import java.util.Scanner;
 
 public class Commute_IO {
 
-    public static int[][] Static_Commuting_Matrix = null;
-    public static int[][] Static_Commuting_Matrix_Male = null;
-    public static int[][] Static_Commuting_Matrix_Female = null;
+    public static int[][] static_commuting_matrix = null;
+    public static int[][] static_commuting_matrix_male = null;
+    public static int[][] static_commuting_matrix_female = null;
 
-    public static int[][] Commuting_matrix = null;
-    public static int[][] Reverse_Commuting_matrix = null;
+    public static int[][] commuting_matrix = null;
+    public static int[][] reversse_commuting_matrix = null;
 
-    public static int[] Number_of_commuters_departing = null;
-    public static int[] Number_of_commuters_arriving = null;
+    public static int[] number_of_commuters_departing = null;
+    public static int[] number_of_commuters_arriving = null;
 
-    public static int[] Local_worker_array = null;
+    public static int[] local_worker_matrix = null;
 
     public static void main(String[] args) {
         CountyDataIO.CountyData_IO_Input();
@@ -23,20 +23,18 @@ public class Commute_IO {
     }
 
     public static void Commute_IO_Input(){
-        String Path = Parameters.Model_PATH + "IO Commute.csv";
+        String Path = Parameters.Model_path + "IO Commute.csv";
 
+        static_commuting_matrix = new int[CountyDataIO.counties.length][CountyDataIO.counties.length];
+        static_commuting_matrix_male = new int[CountyDataIO.counties.length][CountyDataIO.counties.length];
+        static_commuting_matrix_female = new int[CountyDataIO.counties.length][CountyDataIO.counties.length];
 
+        commuting_matrix = new int[CountyDataIO.counties.length][CountyDataIO.counties.length];
+        reversse_commuting_matrix = new int[CountyDataIO.counties.length][CountyDataIO.counties.length];
 
-        Static_Commuting_Matrix = new int[CountyDataIO.Counties.length][CountyDataIO.Counties.length];
-        Static_Commuting_Matrix_Male = new int[CountyDataIO.Counties.length][CountyDataIO.Counties.length];
-        Static_Commuting_Matrix_Female = new int[CountyDataIO.Counties.length][CountyDataIO.Counties.length];
-
-        Commuting_matrix = new int[CountyDataIO.Counties.length][CountyDataIO.Counties.length];
-        Reverse_Commuting_matrix = new int[CountyDataIO.Counties.length][CountyDataIO.Counties.length];
-
-        Number_of_commuters_departing = new int[CountyDataIO.Counties.length];
-        Number_of_commuters_arriving = new int[CountyDataIO.Counties.length];
-        Local_worker_array = new int[CountyDataIO.Counties.length];
+        number_of_commuters_departing = new int[CountyDataIO.counties.length];
+        number_of_commuters_arriving = new int[CountyDataIO.counties.length];
+        local_worker_matrix = new int[CountyDataIO.counties.length];
 
         ArrayList<Commute_info> Commuting_List = new ArrayList<>();
         ArrayList<String> lines = Function.Buffered_IO(Path,true);
@@ -73,28 +71,28 @@ public class Commute_IO {
             int Total_Commuter = Commuting_List.get(Info).getTotal_Commuter();
             int Male_Commuter = Commuting_List.get(Info).getMale_Commuter();
             int Female_Commuter = Commuting_List.get(Info).getFemale_Commuter();
-            int Work_Index = CountyDataIO.Code_Index.indexOf(Work_Code);
-            int Resident_Index = CountyDataIO.Code_Index.indexOf(Resident_Code);
+            int Work_Index = CountyDataIO.code_index.indexOf(Work_Code);
+            int Resident_Index = CountyDataIO.code_index.indexOf(Resident_Code);
 
             if(Work_Index==Resident_Index){
-                Local_worker_array[Work_Index] = Total_Commuter;
+                local_worker_matrix[Work_Index] = Total_Commuter;
                 continue;
             }
 
-            Static_Commuting_Matrix[Resident_Index][Work_Index] = Total_Commuter;
-            Static_Commuting_Matrix_Male[Resident_Index][Work_Index] = Male_Commuter;
-            Static_Commuting_Matrix_Female[Resident_Index][Work_Index] = Female_Commuter;
+            static_commuting_matrix[Resident_Index][Work_Index] = Total_Commuter;
+            static_commuting_matrix_male[Resident_Index][Work_Index] = Male_Commuter;
+            static_commuting_matrix_female[Resident_Index][Work_Index] = Female_Commuter;
 
-            Number_of_commuters_departing[Resident_Index] += Total_Commuter;
-            Number_of_commuters_arriving[Work_Index] += Total_Commuter;
+            number_of_commuters_departing[Resident_Index] += Total_Commuter;
+            number_of_commuters_arriving[Work_Index] += Total_Commuter;
 
-            double Distance = CountyDataIO.DistanceBetweenCounties[Resident_Index][Work_Index];
+            double Distance = CountyDataIO.distance_between_county[Resident_Index][Work_Index];
 
             Commuting_List.get(Info).setCommute_Distance(Distance);
         }
 
-        Commuting_matrix = Static_Commuting_Matrix;
-        Reverse_Commuting_matrix = Reverse_Mat(Commuting_matrix);
+        commuting_matrix = static_commuting_matrix;
+        reversse_commuting_matrix = Reverse_Mat(commuting_matrix);
 
 
     }
@@ -122,26 +120,26 @@ public class Commute_IO {
      */
 
     public static int[] getNumber_of_commuters_arriving() {
-        return Number_of_commuters_arriving;
+        return number_of_commuters_arriving;
     }
 
     public static int[] getNumber_of_commuters_departing() {
-        return Number_of_commuters_departing;
+        return number_of_commuters_departing;
     }
 
     public static int[][] getCommuting_matrix() {
-        return Commuting_matrix;
+        return commuting_matrix;
     }
 
     public static int[][] getReverse_Commuting_matrix() {
-        return Reverse_Commuting_matrix;
+        return reversse_commuting_matrix;
     }
 
     public static int[][] getStatic_Commuting_Matrix() {
-        return Static_Commuting_Matrix;
+        return static_commuting_matrix;
     }
 
-    public static int[] getLocal_worker_array() {
-        return Local_worker_array;
+    public static int[] getLocal_worker_matrix() {
+        return local_worker_matrix;
     }
 }

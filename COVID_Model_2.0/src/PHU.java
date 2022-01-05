@@ -18,10 +18,10 @@ public class PHU {
 
     public static void PHU_IO_Input(){
         CountyDataIO c = new CountyDataIO();
-        phu_by_division = new int[CountyDataIO.DistrictCodes.length];
-        String PHU_file_path = Parameters.ReadPath + "finished version of Public health matching.csv";
+        phu_by_division = new int[CountyDataIO.district_code_array.length];
+        String PHU_file_path = Parameters.Read_path + "finished version of Public health matching.csv";
         System.out.println(PHU_file_path);
-        System.out.println(CountyDataIO.DistrictCodes.length);
+        System.out.println(CountyDataIO.district_code_array.length);
 
         ArrayList<String> Lines = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class PHU {
                 phu_list.add(PHU_name);
                 division_by_phu[phu_list.indexOf(PHU_name)] = new ArrayList<int[]>();
             }
-            phu_by_division[CountyDataIO.DistrictCode.indexOf(code)] = phu_list.indexOf(PHU_name);
+            phu_by_division[CountyDataIO.district_code_list .indexOf(code)] = phu_list.indexOf(PHU_name);
             division_by_phu[phu_list.indexOf(PHU_name)].add(code);
         }
 
@@ -66,7 +66,7 @@ public class PHU {
         }
 
         for (int i = 0; i < phu_by_division.length; i++) {
-            System.out.print(CountyDataIO.DistrictCodes[i]+",");
+            System.out.print(CountyDataIO.district_code_array[i]+",");
             System.out.println(phu_list.get(phu_by_division[i]));
         }
     }

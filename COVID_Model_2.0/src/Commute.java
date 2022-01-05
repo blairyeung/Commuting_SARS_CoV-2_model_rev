@@ -67,49 +67,6 @@ public class Commute {
         Generated_Exportations = Exportations;
     }
 
-    public static void main(String[] args) {
-        CountyDataIO c = new CountyDataIO();
-        getStaticCommuteMatrix();
-    }
-
-    public double[][] Commute(double[] Tier, double[][] StratificationByCouty){
-        int CountyCount = CountyDataIO.Counties.length;
-        double[][] CommuteFromTo = new double[CountyCount][CountyCount];
-        for (int i = 0; i < CountyCount; i++) {
-            for (int i1 = 0; i1 < CountyCount; i1++) {
-                double Distance = CountyDataIO.DistanceBetweenCounties[i][i1];
-                int CaseFlux;
-
-            }
-        }
-        return new double[1][1];
-    }
-
-    public double[] FindCoutiesWithinRange(double[] StartCoord, int InitialCounty){
-        double[] Distances = CountyDataIO.DistanceBetweenCounties[InitialCounty];
-        double[] Exported = new double[CountyDataIO.Counties.length];
-        ArrayList<Integer> CountyWithinRange = new ArrayList<>();
-
-        for (int i = 0; i < CountyDataIO.Counties.length; i++) {
-            if(Distances[i]<150){
-                CountyWithinRange.add(i);
-            }
-        }
-
-        double[] Relative_commuters = new double[CountyWithinRange.size()];
-
-        for (int DestinationCounty = 0; DestinationCounty < CountyWithinRange.size(); DestinationCounty++) {
-            double Population = CountyDataIO.Counties[DestinationCounty].getPopulation();
-            double Distance = CountyDataIO.DistanceBetweenCounties[InitialCounty][CountyWithinRange.get(DestinationCounty)];
-            double Weight = getWeight(InitialCounty, DestinationCounty, Distance);
-            Relative_commuters[DestinationCounty] = Weight;
-        }
-
-        Relative_commuters = Function.Normalization(Relative_commuters);
-
-        return Exported;
-    }
-
     public double getWeight(int InitialCounty, int DestinationCounty, double Distance){
 
         double Weight = 0;
@@ -124,7 +81,7 @@ public class Commute {
             Dist += GammaDist.getGammaFunction(Parameters.MedianDistance_of_Travel_for_Commute)[(int) Distance - 10 + i];
         }
 
-        double DestinationPopulation = CountyDataIO.Counties[DestinationCounty].getPopulation();
+        double DestinationPopulation = CountyDataIO.counties[DestinationCounty].getPopulation();
 
         Weight = Dist * DestinationPopulation;
 
@@ -138,7 +95,7 @@ public class Commute {
          * Will only be ran once to save computational power
          */
 
-        int Number_of_Counties = CountyDataIO.Counties.length;
+        int Number_of_Counties = CountyDataIO.counties.length;
 
         Generated_Matrix = new int[Number_of_Counties][Number_of_Counties];
         Generated_Reversed_Commute_Matrix = new int[Number_of_Counties][Number_of_Counties];

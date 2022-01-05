@@ -45,10 +45,10 @@
 
             ArrayList<String> Lines = new ArrayList<>();
 
-            String Path = Parameters.ReadPath;
+            String Path = Parameters.Read_path;
             FileReader read = null;
             try {
-                read = new FileReader(Parameters.Model_PATH + "cases_by_status_and_phu.csv");
+                read = new FileReader(Parameters.Model_path + "cases_by_status_and_phu.csv");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -73,7 +73,7 @@
 
             FileWriter writer = null;
             try {
-                writer = new FileWriter(Parameters.Model_PATH + "cases_by_status_and_phu_population.csv");
+                writer = new FileWriter(Parameters.Model_path + "cases_by_status_and_phu_population.csv");
             } catch (IOException e) {
                 e.printStackTrace();
             }

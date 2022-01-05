@@ -25,7 +25,7 @@ public class SingleCountyTest {
             Main.Day++;
         }*/
 
-        C.PrintFile(Ontario.TrailData);
+        C.PrintFile(Ontario.trail_data);
 
         System.out.println(path);
     }

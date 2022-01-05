@@ -16,7 +16,7 @@ public class Population_stratification {
         ArrayList<String> list = new ArrayList();
 
         String path = "G:\\98-400-X2016003_ENG_CSV\\98-400-X2016003_English_CSV_data.csv";
-        String outputpath = "G:\\98-400-X2016003_ENG_CSV\\Ontario_Stratified_Subdivision.csv";
+        String output_path = "G:\\98-400-X2016003_ENG_CSV\\Ontario_Stratified_Subdivision.csv";
 
         BufferedReader reader = null;
         try {
@@ -28,7 +28,7 @@ public class Population_stratification {
         BufferedWriter writer = null;
 
         try {
-            writer = new BufferedWriter(new FileWriter(outputpath));
+            writer = new BufferedWriter(new FileWriter(output_path));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,32 +51,23 @@ public class Population_stratification {
                 e.printStackTrace();
             }
 
-            //System.out.println(line);
-
             if(line.indexOf("years")!=-1){
                 String thisline = line;
                 String[] Items = new String[no_items];
                 String item = "";
                 for (int i = 0; i < no_items-1; i++) {
-                    //System.out.println(i);
                     item = thisline.substring(0,thisline.indexOf(","));
                     thisline = thisline.substring(thisline.indexOf(",")+1);
                     Items[i] = item;
                 }
                 item = thisline;
                 Items[no_items-1] = item;
-                for (int i = 0; i < no_items; i++) {
-                    //System.out.println(Items[i]);
-                }
 
-                //System.out.println(Items[1].substring(1,3));
                 if(Items[1].substring(1,3).equals("35")){
-                    //System.out.println(Items[1]);
                     if(Items[1].length()==9){
                         list.add(line);
                     }
                 }
-                //System.out.println(true);
 
             }
         }

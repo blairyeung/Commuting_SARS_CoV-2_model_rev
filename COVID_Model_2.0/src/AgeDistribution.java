@@ -3,7 +3,7 @@ import java.util.Random;
 public class AgeDistribution {
 
     public static double[] getNew_Incidence(double Patients_By_Age[], double[] immunity_matrix, int Variant_Code, double[][][] Mats, int Scenario, int time_step){
-        double[] PatientArr = new double[16];
+        double[] patient_matrix = new double[16];
         double[] SynthesizedPatientArr = new double[16];
         double[] M = new double[16];
         double[][] M2 = new double[16][16];
@@ -23,8 +23,8 @@ public class AgeDistribution {
 
         for (int AgeBand = 0; AgeBand < 16; AgeBand++) {
             for (int AgeBandj = 0; AgeBandj < 16; AgeBandj++) {
-                PatientArr[AgeBandj] =  (0.95 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M2[AgeBand][AgeBandj] * immunity_matrix[AgeBandj] * Patients_By_Age[AgeBand] * Parameters.Infectiousness_By_Variant[Variant_Code];
-                SynthesizedPatientArr[AgeBandj] += PatientArr[AgeBandj];
+                patient_matrix[AgeBandj] =  (0.95 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M2[AgeBand][AgeBandj] * immunity_matrix[AgeBandj] * Patients_By_Age[AgeBand] * Parameters.Infectiousness_By_Variant[Variant_Code];
+                SynthesizedPatientArr[AgeBandj] += patient_matrix[AgeBandj];
             }
         }
 
@@ -42,7 +42,7 @@ public class AgeDistribution {
         }
 
         double AsymRatio = Parameters.SubClinical_Ratio_By_Age[AgeBand];
-        double[] PatientArr = new double[16];
+        double[] patient_matrix = new double[16];
         double[] M = new double[16];
         double SumC = 0;
 
@@ -90,14 +90,14 @@ public class AgeDistribution {
         }
 
         for (int i = 0; i < 16; i++) {
-            PatientArr[i] =  (1 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M[i] * ImmunityMatrix[i] * Patients * Parameters.Infectiousness_By_Variant[Variant_Code];
-            double b =  PatientArr[i];
+            patient_matrix[i] =  (1 + (ProbabilityOutput.GetRandom(GammaDist.FindGammaMedian(1))*0.05)) * M[i] * ImmunityMatrix[i] * Patients * Parameters.Infectiousness_By_Variant[Variant_Code];
+            double b =  patient_matrix[i];
             /**
              * Requires modification
              */
             b = b * AsymRatio * 0.5 + b * (1.0-AsymRatio);
-            PatientArr[i] = b;
-            //System.out.println(PatientArr[i]);
+            patient_matrix[i] = b;
+            //System.out.println(patient_matrix[i]);
         }
         int Stochasticinfected = 0;
 
@@ -123,10 +123,10 @@ public class AgeDistribution {
             }
             for (int i = 0; i < Stochasticinfected; i++) {
                 int Ind = (int) ProbabilityOutput.GetRandom(M);
-                PatientArr[Ind]++;
+                patient_matrix[Ind]++;
             }
         }*/
-        return PatientArr;
+        return patient_matrix;
     }
 
     public static int getPatientAge(String name, double[] AgeMatrix, double[] ImmunityMatrix){

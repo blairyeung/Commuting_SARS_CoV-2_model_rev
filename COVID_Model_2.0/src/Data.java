@@ -4,7 +4,6 @@ public class Data {
 
     private double DataPack[];
     private double DataPackByVariant[][];
-    private ArrayList<Patient> PatientArray[][];
 
     private double[][][] DataPackByAge;
 
@@ -20,7 +19,6 @@ public class Data {
 
         DataPack = new double[Parameters.DataPackSize];
         DataPackByVariant = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize];
-        PatientArray = new ArrayList[Parameters.Total_number_of_variants][Parameters.AgeBand.length];
         DataPackByAge = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize][Parameters.AgeBand.length];
 
         DataPack[0] = Main.Day;/**Day*/
@@ -60,9 +58,6 @@ public class Data {
             for (int i1 = 0; i1 < DataPack.length; i1++) {
                 DataPackByVariant[i][i1] = DataPack[i1];
             }
-            for (int i1 = 0; i1 < Parameters.AgeBand.length; i1++) {
-                PatientArray[i][i1] = new ArrayList<Patient>();
-            }
         }
 
 
@@ -76,7 +71,6 @@ public class Data {
 
         DataPack = new double[Parameters.DataPackSize];
         DataPackByVariant = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize];
-        PatientArray = new ArrayList[2][Parameters.AgeBand.length];
         DataPackByAge = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize][Parameters.AgeBand.length];
 
 
@@ -118,9 +112,6 @@ public class Data {
             for (int i1 = 0; i1 < DataPack.length; i1++) {
                 DataPackByVariant[i][i1] = DataPack[i1];
             }
-            for (int i1 = 0; i1 < Parameters.AgeBand.length; i1++) {
-                PatientArray[i][i1] = new ArrayList<Patient>();
-            }
         }
 
     }
@@ -133,7 +124,6 @@ public class Data {
 
         DataPack = new double[Parameters.DataPackSize];
         DataPackByVariant = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize];
-        PatientArray = new ArrayList[Parameters.Total_number_of_variants][Parameters.AgeBand.length];
         DataPackByAge = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize][Parameters.AgeBand.length];
 
         /**
@@ -188,9 +178,6 @@ public class Data {
             for (int i1 = 0; i1 < DataPack.length; i1++) {
                 DataPackByVariant[i][i1] = DataPack[i1];
             }
-            for (int i1 = 0; i1 < Parameters.AgeBand.length; i1++) {
-                PatientArray[i][i1] = new ArrayList<Patient>();
-            }
         }
 
     }
@@ -203,7 +190,6 @@ public class Data {
 
         DataPack = new double[Parameters.DataPackSize];
         DataPackByVariant = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize];
-        PatientArray = new ArrayList[Parameters.Total_number_of_variants][Parameters.AgeBand.length];
         DataPackByAge = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize][Parameters.AgeBand.length];
 
         /**
@@ -254,9 +240,6 @@ public class Data {
         for (int i = 0; i < Parameters.Total_number_of_variants; i++) {
             for (int i1 = 0; i1 < DataPack.length; i1++) {
                 DataPackByVariant[i][i1] = DataPack[i1];
-            }
-            for (int i1 = 0; i1 < Parameters.AgeBand.length; i1++) {
-                PatientArray[i][i1] = new ArrayList<Patient>();
             }
         }
 
@@ -275,7 +258,6 @@ public class Data {
 
         DataPack = new double[Parameters.DataPackSize];
         DataPackByVariant = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize];
-        PatientArray = new ArrayList[Parameters.Total_number_of_variants][Parameters.AgeBand.length];
         DataPackByAge = new double[Parameters.Total_number_of_variants][Parameters.DataPackSize][Parameters.AgeBand.length];
 
         /**
@@ -327,9 +309,6 @@ public class Data {
             for (int i1 = 0; i1 < DataPack.length; i1++) {
                 DataPackByVariant[i][i1] = DataPack[i1];
             }
-            for (int i1 = 0; i1 < Parameters.AgeBand.length; i1++) {
-                PatientArray[i][i1] = new ArrayList<Patient>();
-            }
         }
 
     }
@@ -337,10 +316,6 @@ public class Data {
     public void setDataPack(double[] DataPack, double[][] DataPackByVariant){
         this.DataPack = DataPack;
         this.DataPackByVariant = DataPackByVariant;
-    }
-
-    public void setPatientArray(ArrayList<Patient>[][] PatientArray){
-        this.PatientArray = PatientArray;
     }
 
     public double[] getDataPack(){
@@ -351,9 +326,6 @@ public class Data {
         return DataPackByVariant;
     }
 
-    public ArrayList<Patient>[][] getPatientArray() {
-        return PatientArray;
-    }
 
     public double[][][] getDataPackByAge(){return DataPackByAge;}
 

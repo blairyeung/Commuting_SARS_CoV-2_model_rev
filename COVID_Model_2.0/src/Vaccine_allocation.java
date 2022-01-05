@@ -34,13 +34,13 @@ public class Vaccine_allocation {
     }
 
     public void Vaccine_allocation_case_0(){
-        int Number_of_counties = CountyDataIO.Counties.length;
-        int Number_of_districts = CountyDataIO.DistrictCodes.length;
+        int Number_of_counties = CountyDataIO.counties.length;
+        int Number_of_districts = CountyDataIO.district_code_array.length;
         Allocation_by_county = new int[Number_of_counties];  
         double Total_population = 13447229;
 
         for (int County_code = 0; County_code < Number_of_counties; County_code++) {
-            double Sub_population = CountyDataIO.Counties[County_code].getPopulation();
+            double Sub_population = CountyDataIO.counties[County_code].getPopulation();
             double Ratio = Sub_population/Total_population;
             Allocation_by_county[County_code] = (int) Math.round(Ratio * Total_vaccine);
         }

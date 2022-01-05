@@ -10,8 +10,6 @@ public class SEIRModel{
 
     public static Data RunModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int ResponseTier, int County, int Local_workers, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
 
-        int Date = Main.Day;
-
         int Population = (int) CountyData.getDataPack()[1];
         int Infected = (int) CountyData.getDataPack()[2];
         int Exposed = (int) CountyData.getDataPack()[3];
@@ -466,12 +464,6 @@ public class SEIRModel{
              */
 
             double Percentage_vaccinated = (CountyData.getDataPackByAge()[0][8][Age_band])/CountyData.getDataPackByAge()[0][1][Age_band];
-
-            /*System.out.println(CountyDataIO.Counties[County].getName());
-            System.out.println("Age Band: " + Parameters.AgeBand[Age_band]);
-            System.out.println(CountyData.getDataPackByAge()[0][8][Age_band]);
-            System.out.println(CountyData.getDataPackByAge()[0][1][Age_band]);*/
-
 
             int Age_band_vaccinated = (int) Math.round(Age_specific_vaccine_distribution[Type][Age_band] * Planned_vaccination);
             if(Percentage_vaccinated>=0.8){

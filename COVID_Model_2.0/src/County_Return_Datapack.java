@@ -1,39 +1,39 @@
 public class County_Return_Datapack {
-    private double Incidence_rate;
-    private int Incidence;
-    private int Exported_cases;
+    private double incidence_rate;
+    private int incidence;
+    private int exported_cases;
 
     public County_Return_Datapack(){
 
     }
 
     public County_Return_Datapack(double incidence_rate, int incidence, int exported_cases){
-        this.Incidence_rate = incidence_rate;
-        this.Incidence = incidence;
-        this.Exported_cases = exported_cases;
+        this.incidence_rate = incidence_rate;
+        this.incidence = incidence;
+        this.exported_cases = exported_cases;
     }
 
     public void setExported_cases(int exported_cases) {
-        Exported_cases = exported_cases;
+        exported_cases = exported_cases;
     }
 
     public void setIncidence(int incidence) {
-        Incidence = incidence;
+        this.incidence = incidence;
     }
 
     public void setIncidence_rate(double incidence_rate) {
-        Incidence_rate = incidence_rate;
+        this.incidence_rate = incidence_rate;
     }
 
     public double getIncidence_rate() {
-        return Incidence_rate;
+        return incidence_rate;
     }
 
     public int getExported_cases() {
-        return Exported_cases;
+        return exported_cases;
     }
 
     public int getIncidence() {
-        return Incidence;
+        return incidence;
     }
 }

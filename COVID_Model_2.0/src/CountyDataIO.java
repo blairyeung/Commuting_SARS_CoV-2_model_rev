@@ -17,7 +17,7 @@ public class CountyDataIO {
     }
 
     public static void CountyData_IO_Input(){
-        String Path = Parameters.ReadPath + "GeoCode.csv";
+        String Path = Parameters.Read_path + "GeoCode.csv";
 
         ArrayList<String> lines = Function.Buffered_IO(Path,true);
         ArrayList<String> Locations = new ArrayList<>();

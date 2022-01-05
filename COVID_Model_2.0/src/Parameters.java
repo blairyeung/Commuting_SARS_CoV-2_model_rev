@@ -7,9 +7,8 @@ public class Parameters {
     final static public String Version = "Ver 1.5";
 
     public static double Kilometers_per_degree = 113.321;//float
-    static public String Model_PATH = "Model IO/";
-    static public String PathDefault = "E:/Global Model/Vaccine/";
-    static public String ReadPath = "Model IO/";
+    static public String Model_path = "Model IO/";
+    static public String Read_path = "Model IO/";
     static public String WritePath = "Model Output/";
     static public double Transmissbility_by_variant[] = {0.025,0.025*1.66,0.025*1.66*1.6};
     static public int DataPackSize = 25;

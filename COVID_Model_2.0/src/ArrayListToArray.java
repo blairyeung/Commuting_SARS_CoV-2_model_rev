@@ -2,36 +2,36 @@ import javax.swing.text.Element;
 import java.util.ArrayList;
 
 public class ArrayListToArray {
-    /*public static CountyData[] toArray(ArrayList<CountyData> Input, CountyData[] Output){
-        Output = new CountyData[Input.size()];
-        for (int i = 0; i < Output.length; i++) {
-            Output[i] = Input.get(i);
+    /*public static CountyData[] toArray(ArrayList<CountyData> input, CountyData[] output){
+        output = new CountyData[input.size()];
+        for (int i = 0; i < output.length; i++) {
+            output[i] = input.get(i);
         }
-        return Output;
+        return output;
     }*/
 
-    public static CountyData[] toArray(ArrayList<CountyData> Input, CountyData[] Output){
-        Output = new CountyData[Input.size()];
-        for (int i = 0; i < Output.length; i++) {
-            Output[i] = Input.get(i);
+    public static CountyData[] toArray(ArrayList<CountyData> input, CountyData[] output){
+        output = new CountyData[input.size()];
+        for (int i = 0; i < output.length; i++) {
+            output[i] = input.get(i);
         }
-        return Output;
+        return output;
     }
 
-    public static double[] toArray(ArrayList<Double> Input, double[] Output){
-        Output = new double[Input.size()];
-        for (int i = 0; i < Output.length; i++) {
-            Output[i] = Input.get(i);
+    public static double[] toArray(ArrayList<Double> input, double[] output){
+        output = new double[input.size()];
+        for (int i = 0; i < output.length; i++) {
+            output[i] = input.get(i);
         }
-        return Output;
+        return output;
     }
 
 
-    public static ArrayList<CountyData> toList(ArrayList<CountyData> Output, CountyData[] Input){
-        Output = new ArrayList<CountyData>();
-        for (int i = 0; i < Input.length; i++) {
-            Output.add(Input[i]);
+    public static ArrayList<CountyData> toList(ArrayList<CountyData> output, CountyData[] input){
+        output = new ArrayList<CountyData>();
+        for (int i = 0; i < input.length; i++) {
+            output.add(input[i]);
         }
-        return Output;
+        return output;
     }
 }
