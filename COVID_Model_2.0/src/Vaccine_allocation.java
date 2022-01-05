@@ -35,7 +35,6 @@ public class Vaccine_allocation {
 
     public void Vaccine_allocation_case_0(){
         int Number_of_counties = CountyDataIO.counties.length;
-        int Number_of_districts = CountyDataIO.district_code_array.length;
         Allocation_by_county = new int[Number_of_counties];  
         double Total_population = 13447229;
 

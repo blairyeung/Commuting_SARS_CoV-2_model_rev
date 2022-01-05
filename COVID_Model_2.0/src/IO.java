@@ -33,7 +33,7 @@ public class IO{
 
     public static void Age_distribution_IO(){
 
-        ArrayList<String> lines = Function.Buffered_IO(Parameters.ReadPath+"Country_Files/Country_Age_Distribution.csv",false);
+        ArrayList<String> lines = Function.Buffered_IO(Parameters.Read_path+"Country_Files/Country_Age_Distribution.csv",false);
 
         for (int line = 0; line < lines.size(); line++) {
             String str = lines.get(line);
