@@ -65,7 +65,7 @@ public class IO{
                 MatricesByCategory[County_type][Category] = new ArrayList<double[][]>();
                 for (int Country = 0; Country < Countrycode.size(); Country++) {
                     String Suf = ".csv";
-                    String name = Parameters.ReadPath + "Matrix_IO/Matrix_by_Category/" + County_Category[County_type] + "/" + Categories[Category] + "/"+Countrycode.get(Country)+Suf;
+                    String name = Parameters.Read_path + "Matrix_IO/Matrix_by_Category/" + County_Category[County_type] + "/" + Categories[Category] + "/"+Countrycode.get(Country)+Suf;
                     try {
                         Readers[Country] = new BufferedReader(new FileReader(name));
                     } catch (FileNotFoundException e) {
@@ -112,7 +112,7 @@ public class IO{
 
     public static void Immunity_level_IO(){
 
-        ArrayList<String> lines = Function.Buffered_IO(Parameters.ReadPath+"Vaccine_Pfizer/Efficacy.csv",true);
+        ArrayList<String> lines = Function.Buffered_IO(Parameters.Read_path+"Vaccine_Pfizer/Efficacy.csv",true);
 
         for (int line = 0; line < lines.size(); line++) {
             String Efficacy_on_day = lines.get(line);
