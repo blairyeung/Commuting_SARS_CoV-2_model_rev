@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 
-public class IO{
+public class Input{
     public static ArrayList<String> Countryname = new ArrayList<>();
     public static ArrayList<String> Countrycode = new ArrayList<>();
     public static ArrayList<Double> BasicReproduction = new ArrayList<>();

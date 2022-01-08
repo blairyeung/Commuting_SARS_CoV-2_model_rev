@@ -22,16 +22,32 @@ public class SEIRModel{
 
     public static Data RunModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int Responsetier, int County, int Local_workers, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
 
-        int population = (int) CountyData.getEpidemiological_data_total()[1];
+        int population = (int) CountyData.getPopulation();
+        int infected = (int) CountyData.getIncidence();
+        int exposed = (int) CountyData.getExposed();
+        int active_cases = (int) CountyData.getActive();
+        int critical_cases = (int) CountyData.getCritical();
+        int resolved = (int) CountyData.getEpidemiological_data_total()[6];
+        int deaths = (int) CountyData.getEpidemiological_data_total()[7];
+        int vaccinated = (int) CountyData.getEpidemiological_data_total()[8];
+        int clinical_cases = (int) CountyData.getEpidemiological_data_total()[9];
+        int sub_clinical_cases = (int) CountyData.getEpidemiological_data_total()[10];
+        double CFR = CountyData.getEpidemiological_data_total()[11];
+        int immunity_ratio = (int) CountyData.getEpidemiological_data_total()[12];
+        int tier = (int) CountyData.getEpidemiological_data_total()[13];
+        int commute_coeff = (int) CountyData.getEpidemiological_data_total()[14];
+        int imported_cases = (int) CountyData.getEpidemiological_data_total()[15];
+        int exported_cases = (int) CountyData.getEpidemiological_data_total()[16];
+
         int Type = 0;
         if(population>=10000){
             Type = 1;
         }
 
-        double[][] Work = (double[][]) IO.MatricesByCategory[Type][0].get(IO.Countrycode.indexOf("CA"));
-        double[][] School = (double[][]) IO.MatricesByCategory[Type][1].get(IO.Countrycode.indexOf("CA"));
-        double[][] Home = (double[][]) IO.MatricesByCategory[Type][2].get(IO.Countrycode.indexOf("CA"));
-        double[][] Other = (double[][]) IO.MatricesByCategory[Type] [3].get(IO.Countrycode.indexOf("CA"));
+        double[][] Work = (double[][]) Input.MatricesByCategory[Type][0].get(Input.Countrycode.indexOf("CA"));
+        double[][] School = (double[][]) Input.MatricesByCategory[Type][1].get(Input.Countrycode.indexOf("CA"));
+        double[][] Home = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
+        double[][] Other = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
 
         double[][][] Mat = {Work,School,Home,Other};
 
@@ -117,6 +133,7 @@ public class SEIRModel{
                 int Age_Band_SubclinicalCases = (int) Math.round(Parameters.SubClinical_Ratio_By_Age[Patient_Age_Band] * Age_Band_active_cases);
                 int Age_Band_clinical_cases = Age_Band_active_cases - Age_Band_SubclinicalCases;
 
+                int addition_preset_1[] = {0,1,3,4,5,6,7,9};
                 new_data.setValueDataPackByAge(0,Patient_Age_Band,0,Main.Day+1);//Date
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,1,CountyData.getDataPackByAge()[Variant][1][Patient_Age_Band]);//population
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,3,Age_Band_exposed);//exposed
@@ -124,14 +141,7 @@ public class SEIRModel{
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,5,Age_Band_critical_cases);//Critical
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,6,Age_Band_resolved);//Critical
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,7,Age_Band_deaths);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,9,Age_Band_clinical_cases);//Clinical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,10,Age_Band_SubclinicalCases);//Subclinical
-
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,18,Age_Band_Newexposed);//New_exposed
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,19,Age_Band_NewCases);//New_Active_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,20,Age_Band_NewCritical);//New_Critical_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,21,Age_Band_Newresolved);//New_resolved
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,22,Age_Band_Newdeaths);//New_Death
+                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,9,Age_Band_clinical_cases);//Clinical565
 
                 Total_Newexposed += Age_Band_Newexposed;
                 Total_NewCases += Age_Band_NewCases;
@@ -217,7 +227,7 @@ public class SEIRModel{
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,17, Age_band_Newinfected);
                 Total_Newinfected += Age_band_Newinfected;
 
-                ExportedCases += For_Export;
+                Exported_cases += For_Export;
                 Total_Exported += For_Export;
             }
 
@@ -267,6 +277,7 @@ public class SEIRModel{
 
         immunity_ratio += Total_Newinfected;
 
+
         new_data.setValueDataPack(0,Main.Day+1);
         new_data.setValueDataPack(1,population);
         new_data.setValueDataPack(2,infected);
@@ -281,7 +292,7 @@ public class SEIRModel{
         new_data.setValueDataPack(11,CFR);
         new_data.setValueDataPack(12,immunity_ratio);
         new_data.setValueDataPack(13,tier);
-        new_data.setValueDataPack(14,commute_constant);
+        new_data.setValueDataPack(14,commute_coeff);
         new_data.setValueDataPack(15,ImportedCases);
         new_data.setValueDataPack(16,ExportedCases);
         new_data.setValueDataPack(17,Dailyinfected);
@@ -311,7 +322,7 @@ public class SEIRModel{
         double CFR = CountyData.getEpidemiological_data_total()[11];
         int immunity_ratio = (int) CountyData.getEpidemiological_data_total()[12];
         int tier = (int) CountyData.getEpidemiological_data_total()[13];
-        int commute_constant = (int) CountyData.getEpidemiological_data_total()[14];
+        int commute_coeff = (int) CountyData.getEpidemiological_data_total()[14];
         int ImportedCases = (int) CountyData.getEpidemiological_data_total()[15];
         int ExportedCases = (int) CountyData.getEpidemiological_data_total()[16];
 
@@ -322,10 +333,10 @@ public class SEIRModel{
             Type = 1;
         }
 
-        double[][] Work = (double[][]) IO.MatricesByCategory[Type][0].get(IO.Countrycode.indexOf("CA"));
-        double[][] School = (double[][]) IO.MatricesByCategory[Type][1].get(IO.Countrycode.indexOf("CA"));
-        double[][] Home = (double[][]) IO.MatricesByCategory[Type][2].get(IO.Countrycode.indexOf("CA"));
-        double[][] Other = (double[][]) IO.MatricesByCategory[Type] [3].get(IO.Countrycode.indexOf("CA"));
+        double[][] Work = (double[][]) Input.MatricesByCategory[Type][0].get(Input.Countrycode.indexOf("CA"));
+        double[][] School = (double[][]) Input.MatricesByCategory[Type][1].get(Input.Countrycode.indexOf("CA"));
+        double[][] Home = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
+        double[][] Other = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
 
         double[][][] Mat = {Work,School,Home,Other};
 
@@ -482,7 +493,7 @@ public class SEIRModel{
         new_data.setValueDataPack(11,CFR);
         new_data.setValueDataPack(12,CountyData.getEpidemiological_data_total()[12]);
         new_data.setValueDataPack(13,tier);
-        new_data.setValueDataPack(14,commute_constant);
+        new_data.setValueDataPack(14,commute_coeff);
         new_data.setValueDataPack(15,CountyData.getEpidemiological_data_total()[15]);
         new_data.setValueDataPack(16,CountyData.getEpidemiological_data_total()[16]);
         new_data.setValueDataPack(17,Dailyinfected);
@@ -553,20 +564,20 @@ public class SEIRModel{
 
                 int date_index = Math.min(1500,Main.Day + Pastdata.getLength() - date);
 
-                Immunity_level_against_infection_mild += vaccinated_on_day * IO.Immunity_wane_mild.get(date_index);
-                Immunity_level_against_infection_mild += infected_on_day * IO.Immunity_wane_mild.get((date_index)/2);
-                Immunity_level_against_hospitalization_severe += vaccinated_on_day * IO.Immunity_wane_severe.get(date_index);
-                Immunity_level_against_hospitalization_severe += infected_on_day * IO.Immunity_wane_severe.get((date_index)/2);
+                Immunity_level_against_infection_mild += vaccinated_on_day * Input.Immunity_wane_mild.get(date_index);
+                Immunity_level_against_infection_mild += infected_on_day * Input.Immunity_wane_mild.get((date_index)/2);
+                Immunity_level_against_hospitalization_severe += vaccinated_on_day * Input.Immunity_wane_severe.get(date_index);
+                Immunity_level_against_hospitalization_severe += infected_on_day * Input.Immunity_wane_severe.get((date_index)/2);
             }
 
             for (int date = 0; date < Main.Day; date++) {
                 double vaccinated_on_day =  DataPack.getTimeSeries()[date].getDataPackByAge()[0][23][Ageband];
                 double infected_on_day =  DataPack.getTimeSeries()[date].getDataPackByAge()[0][17][Ageband];
                 int date_index = Math.min(1500,Main.Day-date);
-                Immunity_level_against_infection_mild += vaccinated_on_day * IO.Immunity_wane_mild.get(date_index);
-                Immunity_level_against_infection_mild += infected_on_day * IO.Immunity_wane_mild.get((date_index)/2);
-                Immunity_level_against_hospitalization_severe += vaccinated_on_day * IO.Immunity_wane_severe.get(date_index);
-                Immunity_level_against_hospitalization_severe += infected_on_day * IO.Immunity_wane_severe.get((date_index)/2);
+                Immunity_level_against_infection_mild += vaccinated_on_day * Input.Immunity_wane_mild.get(date_index);
+                Immunity_level_against_infection_mild += infected_on_day * Input.Immunity_wane_mild.get((date_index)/2);
+                Immunity_level_against_hospitalization_severe += vaccinated_on_day * Input.Immunity_wane_severe.get(date_index);
+                Immunity_level_against_hospitalization_severe += infected_on_day * Input.Immunity_wane_severe.get((date_index)/2);
             }
 
             Immunity_level_by_age_and_category[Ageband] = new double[]{Immunity_level_against_infection_mild, Immunity_level_against_hospitalization_severe};
@@ -579,7 +590,8 @@ public class SEIRModel{
 
         return Immunity_level_by_age_and_category;
     }
-    public static void set_data_package(){
+
+    public static void set_new_data(Data new_data){
         
     }
 }

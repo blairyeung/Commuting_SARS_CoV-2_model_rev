@@ -11,7 +11,7 @@ public class Parameters {
     static public String Read_path = "Model IO/";
     static public String WritePath = "Model Output/";
     static public double Transmissbility_by_variant[] = {0.025,0.025*1.66,0.025*1.66*1.6};
-    static public int DataPackSize = 25;
+    static public int DataPackSize = 26;
 
     static public int Total_number_of_variants = 2;
 

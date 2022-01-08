@@ -54,7 +54,7 @@ public class Presets {
                         Initial_Cases_Age_Band_By_County[County_Code][Age_Band] = (int) Math.round(Initial_Cases_Age_Band[Age_Band] * Incidence_constant * ((double) Population));
                         Initial_Immunity_Age_Band_By_County[County_Code][Age_Band] = (int) Math.round(Initial_Immunity_Age_Band[Age_Band] * Immunity_level_constant * ((double) Population));
 
-                    }
+                     }
                 }
 
                 Initial = new Initial_Parameters(Initial_Cases_Age_Band_By_County, Initial_Immunity_Age_Band_By_County);
