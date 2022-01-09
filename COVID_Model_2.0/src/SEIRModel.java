@@ -22,25 +22,25 @@ public class SEIRModel{
 
     public static Data RunModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int Responsetier, int County, int Local_workers, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
 
-        int population = (int) CountyData.getPopulation();
-        int infected = (int) CountyData.getIncidence();
-        int exposed = (int) CountyData.getExposed();
-        int active_cases = (int) CountyData.getActive();
-        int critical_cases = (int) CountyData.getCritical();
-        int resolved = (int) CountyData.getEpidemiological_data_total()[6];
-        int deaths = (int) CountyData.getEpidemiological_data_total()[7];
-        int vaccinated = (int) CountyData.getEpidemiological_data_total()[8];
-        int clinical_cases = (int) CountyData.getEpidemiological_data_total()[9];
-        int sub_clinical_cases = (int) CountyData.getEpidemiological_data_total()[10];
-        double CFR = CountyData.getEpidemiological_data_total()[11];
-        int immunity_ratio = (int) CountyData.getEpidemiological_data_total()[12];
-        int tier = (int) CountyData.getEpidemiological_data_total()[13];
-        int commute_coeff = (int) CountyData.getEpidemiological_data_total()[14];
-        int imported_cases = (int) CountyData.getEpidemiological_data_total()[15];
-        int exported_cases = (int) CountyData.getEpidemiological_data_total()[16];
+        int total_population = (int) CountyData.getPopulation();
+        int total_infected = (int) CountyData.getIncidence();
+        int total_exposed = (int) CountyData.getExposed();
+        int total_active_cases = (int) CountyData.getActive();
+        int total_critical_cases = (int) CountyData.getCritical();
+        int total_resolved = (int) CountyData.getResolved();
+        int total_deaths = (int) CountyData.getDeaths();
+        int total_vaccinated = (int) CountyData.getVaccinated();
+        int total_clinical_cases = (int) CountyData.getClinical();
+        int total_sub_clinical_cases = (int) CountyData.getSub_clinical();
+        double total_CFR = CountyData.getCFR();
+        double total_immunity_ratio = CountyData.getImmunity();
+        int total_tier = (int) CountyData.getTier();
+        int total_commute_coeff = (int) CountyData.getCommute_coeff();
+        int total_imported_cases = (int) CountyData.getImported();
+        int total_exported_cases = (int) CountyData.getExported();
 
         int Type = 0;
-        if(population>=10000){
+        if(total_population>=10000){
             Type = 1;
         }
 
@@ -49,7 +49,7 @@ public class SEIRModel{
         double[][] Home = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
         double[][] Other = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
 
-        double[][][] Mat = {Work,School,Home,Other};
+        double[][][] contact_matrices = {Work,School,Home,Other};
 
         /**
          * Imported_cases will only increase the number of potential contacters, rather than infected
@@ -91,7 +91,10 @@ public class SEIRModel{
                  * Add cases
                  */
 
-                double Specific_CFR = Parameters.CFR[Patient_Age_Band] * Parameters.CFR_By_Variant[Variant];
+                double basic_CFR =  Parameters.CFR[Patient_Age_Band];
+                double variant_boost = Parameters.CFR_By_Variant[Variant];
+
+                double Specific_CFR = basic_CFR * variant_boost;
 
                 double Age_Band_Newexposed = 0;
                 double Age_Band_NewCases = 0;
@@ -133,9 +136,9 @@ public class SEIRModel{
                 int Age_Band_SubclinicalCases = (int) Math.round(Parameters.SubClinical_Ratio_By_Age[Patient_Age_Band] * Age_Band_active_cases);
                 int Age_Band_clinical_cases = Age_Band_active_cases - Age_Band_SubclinicalCases;
 
-                int addition_preset_1[] = {0,1,3,4,5,6,7,9};
-                new_data.setValueDataPackByAge(0,Patient_Age_Band,0,Main.Day+1);//Date
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,1,CountyData.getDataPackByAge()[Variant][1][Patient_Age_Band]);//population
+                int setter_preset_1[] = {3,4,5,6,7,9};
+                double data[] = {Age_Band_exposed, };
+                set_new_data(new_data, setter_preset_1, data);
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,3,Age_Band_exposed);//exposed
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,4,Age_Band_active_cases);//Active_cases
                 new_data.setValueDataPackByAge(Variant,Patient_Age_Band,5,Age_Band_critical_cases);//Critical
@@ -174,20 +177,21 @@ public class SEIRModel{
          *  Patients who are newly infected
          */
 
-        for (int Variant = 0; Variant < Parameters.Total_number_of_variants; Variant++) {
+        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
             double Transmissible[] = new double[16];
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
-                double Age_Band_exposed = CountyData.getDataPackByAge()[Variant][3][Patient_Age_Band] + (Parameters.Workforce_Age_Dist[Patient_Age_Band] * ImportedCases);
-                double EffectiveContacter = Math.round(findEffectiveContacter(SeriesData, Variant, Patient_Age_Band, Age_Band_exposed)+0.4);
-                Transmissible[Patient_Age_Band] = EffectiveContacter;
+            for (int age_band = 0; age_band < 16; age_band++) {
+                double local_exposed = CountyData.getExposed(variant, age_band);
+                double imported_exposed = imported_cases * Parameters.Workforce_Age_Dist[age_band];
+                double age_band_transmission = local_exposed + imported_exposed;
+                double transmissible = Math.round(findEffectiveContacter(SeriesData, variant, age_band, age_band_transmission)+0.4);
+                Transmissible[age_band] = transmissible;
             }
 
             /**
              * Number of individuals newly infected
              */
 
-            double[] DailyinfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, Variant, Mat,tier, 0);
-
+            double[] daily_incidence_by_age = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, variant, contact_matrices, tier, 0);
 
             double Total_Workers;
 
@@ -591,7 +595,7 @@ public class SEIRModel{
         return Immunity_level_by_age_and_category;
     }
 
-    public static void set_new_data(Data new_data){
+    public static void set_new_data(Data new_data, int[] indices, double[] data){
         
     }
 }
