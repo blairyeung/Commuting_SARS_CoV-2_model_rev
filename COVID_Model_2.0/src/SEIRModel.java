@@ -62,19 +62,18 @@ public class SEIRModel{
 
         int Dailyvaccinated = 0;
 
-        double Total_Newinfected = 0;
-        double Total_Newexposed = 0;
-        double Total_NewCases = 0;
-        double Total_NewCritical = 0;
-        double Total_Newresolved = 0;
-        double Total_Newdeaths = 0;
+        double total_new_daily_incidence = 0;
+        double total_new_daily_exposed = 0;
+        double total_new_daily_cases = 0;
+        double total_new_daily_critical = 0;
+        double total_new_daily_resolved = 0;
+        double total_new_daily_deaths = 0;
 
-        double Total_Removedexposed = 0;
-        double Total_RemovedCases = 0;
-        double Total_RemovedCritical = 0;
-        //double Total_Removedresolved = 0;
+        double total_daily_removed_exposed = 0;
+        double total_daily_removed_cases = 0;
+        double total_daily_removed_critical = 0;
 
-        double[][] Immunity_by_category = findImmuned_ratio(PastData, SeriesData);
+        double[][] immunity_by_category = findImmuned_ratio(PastData, SeriesData);
 
 
         /**
@@ -83,81 +82,75 @@ public class SEIRModel{
 
         Data new_data = new Data();
 
-        for (int Variant = 0; Variant < Parameters.Total_number_of_variants; Variant++) {
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
+        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
+            for (int patient_age = 0; patient_age < 16; patient_age++) {
 
 
                 /**
                  * Add cases
                  */
 
-                double basic_CFR =  Parameters.CFR[Patient_Age_Band];
-                double variant_boost = Parameters.CFR_By_Variant[Variant];
+                double basic_CFR =  Parameters.CFR[patient_age];
+                double variant_boost = Parameters.CFR_By_Variant[variant];
 
                 double Specific_CFR = basic_CFR * variant_boost;
 
-                double Age_Band_Newexposed = 0;
-                double Age_Band_NewCases = 0;
-                double Age_Band_NewCritical = 0;
-                double Age_Band_Newresolved = 0;
-                double Age_Band_Newdeaths = 0;
+                double new_daily_exposed = 0;
+                double new_daily_cases = 0;
+                double new_daily_critical = 0;
+                double new_daily_resolved = 0;
+                double new_daily_deaths = 0;
 
-                double Age_Band_Removedexposed = 0;
-                double Age_Band_RemovedCases = 0;
-                double Age_Band_RemovedCritical = 0;
+                double z = 0;
+                double new_removed_exposed = 0;
+                double new_removed_cases = 0;
+                double new_removed_critical = 0;
 
-                double CFR_true = 1 - Parameters.CFR[Patient_Age_Band] * Immunity_by_category[Patient_Age_Band][0];//Add the CFR difference of different variants
+                double CFR_true = 1 - Parameters.CFR[patient_age] * immunity_by_category[patient_age][0];//Add the CFR difference of different variants
 
                 if(Main.Day>=3){
-                    Age_Band_Newexposed = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-3].getDataPackByAge()[Variant][17][Patient_Age_Band]);
+                    new_daily_exposed = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-3].getDaily_incidence(variant,patient_age));
                 }
                 if (Main.Day>=6) {
-                    Age_Band_NewCases = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-3].getDataPackByAge()[Variant][18][Patient_Age_Band]);
-                    Age_Band_Removedexposed = Age_Band_NewCases;
+                    new_daily_cases = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-3].getDaily_exposed(variant,patient_age));
+                    new_removed_exposed = new_daily_cases;
                 }
                 if(Main.Day>=8){
-                    Age_Band_NewCritical = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-5].getDataPackByAge()[Variant][19][Patient_Age_Band] * (Parameters.CriticalRate[Patient_Age_Band]));
+                    new_daily_critical = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-5].getDataPackByAge()[variant][19][patient_age] * (Parameters.CriticalRate[patient_age]));
                 }
                 if(Main.Day>=14){
-                    Age_Band_RemovedCritical = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-14].getDataPackByAge()[Variant][19][Patient_Age_Band] * (Parameters.CriticalRate[Patient_Age_Band]));
+                    new_removed_critical = (int) Math.round(SeriesData.getTimeSeries()[Main.Day-14].getDataPackByAge()[variant][19][patient_age] * (Parameters.CriticalRate[patient_age]));
                 }
                 if(Main.Day>=15){
-                    Age_Band_Newresolved = Math.round((SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[Variant][19][Patient_Age_Band] * (1.0 - Specific_CFR)) - 0.3);
-                    Age_Band_Newdeaths = Math.round(0.3 + (SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[Variant][19][Patient_Age_Band] * Specific_CFR));
-                    Age_Band_RemovedCases = SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[Variant][19][Patient_Age_Band];
+                    //new_daily_critical = Math.round((SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[variant][19][patient_age] * (1.0 - Specific_CFR)) - 0.3);
+                    new_daily_deaths = Math.round(0.3 + (SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[variant][19][patient_age] * Specific_CFR));
+                    new_removed_cases = SeriesData.getTimeSeries()[Main.Day-9].getDataPackByAge()[variant][19][patient_age];
                 }
 
-                int Age_Band_exposed = (int) Math.round(CountyData.getDataPackByAge()[Variant][3][Patient_Age_Band] + Age_Band_Newexposed - Age_Band_NewCases);
-                int Age_Band_active_cases = (int) Math.round((CountyData.getDataPackByAge()[Variant][4][Patient_Age_Band] + Age_Band_NewCases - Age_Band_RemovedCases));
-                int Age_Band_critical_cases = (int) Math.round(CountyData.getDataPackByAge()[Variant][5][Patient_Age_Band] + Age_Band_NewCritical - Age_Band_RemovedCritical);
-                int Age_Band_resolved = (int) (CountyData.getDataPackByAge()[Variant][6][Patient_Age_Band] + Age_Band_Newresolved);
-                int Age_Band_deaths = (int) (CountyData.getDataPackByAge()[Variant][7][Patient_Age_Band] + Age_Band_Newdeaths);
+                int exposed = (int) Math.round(CountyData.getDataPackByAge()[variant][3][patient_age] + new_daily_exposed - new_daily_cases);
+                int cases = (int) Math.round((CountyData.getDataPackByAge()[variant][4][patient_age] + new_daily_cases - new_removed_cases));
+                int critical = (int) Math.round(CountyData.getDataPackByAge()[variant][5][patient_age] + new_daily_critical - new_removed_critical);
+                int resolved = (int) (CountyData.getDataPackByAge()[variant][6][patient_age] + new_daily_resolved);
+                int deaths = (int) (CountyData.getDataPackByAge()[variant][7][patient_age] + new_daily_deaths);
 
-                int Age_Band_SubclinicalCases = (int) Math.round(Parameters.SubClinical_Ratio_By_Age[Patient_Age_Band] * Age_Band_active_cases);
-                int Age_Band_clinical_cases = Age_Band_active_cases - Age_Band_SubclinicalCases;
+                int sub_clinical_cases = (int) Math.round(Parameters.SubClinical_Ratio_By_Age[patient_age] * cases);
+                int clinical_cases = cases - sub_clinical_cases;
 
-                int setter_preset_1[] = {3,4,5,6,7,9};
-                double data[] = {Age_Band_exposed, };
-                set_new_data(new_data, setter_preset_1, data);
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,3,Age_Band_exposed);//exposed
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,4,Age_Band_active_cases);//Active_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,5,Age_Band_critical_cases);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,6,Age_Band_resolved);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,7,Age_Band_deaths);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,9,Age_Band_clinical_cases);//Clinical565
+                int setter_preset_1[] = {3,4,5,6,7,9,10};
+                double data[] = {exposed, cases, critical, resolved, deaths, clinical_cases, sub_clinical_cases};
+                set_new_data(new_data, setter_preset_1, data, variant, patient_age);
 
-                Total_Newexposed += Age_Band_Newexposed;
-                Total_NewCases += Age_Band_NewCases;
-                Total_NewCritical += Age_Band_NewCritical;
-                Total_Newresolved += Age_Band_Newresolved;
-                Total_Newdeaths += Age_Band_Newdeaths;
+                total_new_daily_exposed += new_daily_exposed;
+                total_new_daily_cases += new_daily_cases;
+                total_new_daily_critical += new_daily_critical;
+                total_new_daily_resolved += new_daily_resolved;
+                total_new_daily_deaths += new_daily_deaths;
 
-                Total_Removedexposed += Age_Band_Removedexposed;
-                Total_RemovedCases += Age_Band_RemovedCases;
-                Total_RemovedCritical += Age_Band_RemovedCritical;
+                total_daily_removed_cases += new_removed_cases;
+                total_daily_removed_critical  += new_removed_critical;
 
-                clinical_cases += Age_Band_clinical_cases;
-                sub_clinical_cases += Age_Band_SubclinicalCases;
+                clinical_cases += clinical_cases;
+                sub_clinical_cases += sub_clinical_cases;
             }
         }
 
@@ -168,9 +161,9 @@ public class SEIRModel{
 
         double ImmunityMat[] = new double[16];
 
-        for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
-            double ShieldingImm = Immunity_by_category[Patient_Age_Band][0]/CountyData.getDataPackByAge()[0][1][Patient_Age_Band];
-            ImmunityMat[Patient_Age_Band] = 1-ShieldingImm;
+        for (int patient_age = 0; patient_age < 16; patient_age++) {
+            double ShieldingImm = immunity_by_category[patient_age][0]/CountyData.getDataPackByAge()[0][1][patient_age];
+            ImmunityMat[patient_age] = 1-ShieldingImm;
         }
 
         /**
@@ -211,24 +204,24 @@ public class SEIRModel{
                 ratio = 1;
             }
 
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
+            for (int patient_age = 0; patient_age < 16; patient_age++) {
 
                 /**
                  * Export cases by age band (REF)
                  */
 
-                int For_Export = (int) ((DailyinfectedArray[Patient_Age_Band]) * ratio);
+                int For_Export = (int) ((DailyinfectedArray[patient_age]) * ratio);
 
 
 
-                int Age_band_Newinfected = (int) (Math.round(DailyinfectedArray[Patient_Age_Band] - For_Export));
+                int Age_band_Newinfected = (int) (Math.round(DailyinfectedArray[patient_age] - For_Export));
 
                 if(Age_band_Newinfected<0){
                     Age_band_Newinfected = 0;
                 }
 
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,2,CountyData.getDataPackByAge()[Variant][2][Patient_Age_Band]+Age_band_Newinfected);
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,17, Age_band_Newinfected);
+                new_data.setValueDataPackByAge(variant,patient_age,2,CountyData.getDataPackByAge()[variant][2][patient_age]+Age_band_Newinfected);
+                new_data.setValueDataPackByAge(variant,patient_age,17, Age_band_Newinfected);
                 Total_Newinfected += Age_band_Newinfected;
 
                 Exported_cases += For_Export;
@@ -311,24 +304,24 @@ public class SEIRModel{
     }
 
     public static Data NightModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int Responsetier, int County, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
-        int Date = Main.Day;
 
-        int population = (int) CountyData.getEpidemiological_data_total()[1];
-        int infected = (int) CountyData.getEpidemiological_data_total()[2];
-        int exposed = (int) CountyData.getEpidemiological_data_total()[3];
-        int active_cases = (int) CountyData.getEpidemiological_data_total()[4];
-        int critical_cases = (int) CountyData.getEpidemiological_data_total()[5];
-        int resolved = (int) CountyData.getEpidemiological_data_total()[6];
-        int deaths = (int) CountyData.getEpidemiological_data_total()[7];
-        int vaccinated = (int) CountyData.getEpidemiological_data_total()[8];
-        int clinical_cases = (int) CountyData.getEpidemiological_data_total()[9];
-        int sub_clinical_cases = (int) CountyData.getEpidemiological_data_total()[10];
-        double CFR = CountyData.getEpidemiological_data_total()[11];
-        int immunity_ratio = (int) CountyData.getEpidemiological_data_total()[12];
-        int tier = (int) CountyData.getEpidemiological_data_total()[13];
-        int commute_coeff = (int) CountyData.getEpidemiological_data_total()[14];
-        int ImportedCases = (int) CountyData.getEpidemiological_data_total()[15];
-        int ExportedCases = (int) CountyData.getEpidemiological_data_total()[16];
+        int total_population = (int) CountyData.getPopulation();
+        int total_infected = (int) CountyData.getIncidence();
+        int total_exposed = (int) CountyData.getExposed();
+        int total_active_cases = (int) CountyData.getActive();
+        int total_critical_cases = (int) CountyData.getCritical();
+        int total_resolved = (int) CountyData.getResolved();
+        int total_deaths = (int) CountyData.getDeaths();
+        int total_vaccinated = (int) CountyData.getVaccinated();
+        int total_clinical_cases = (int) CountyData.getClinical();
+        int total_sub_clinical_cases = (int) CountyData.getSub_clinical();
+        double total_CFR = CountyData.getCFR();
+        double total_immunity_ratio = CountyData.getImmunity();
+        int total_tier = (int) CountyData.getTier();
+        int total_commute_coeff = (int) CountyData.getCommute_coeff();
+        int total_imported_cases = (int) CountyData.getImported();
+        int total_exported_cases = (int) CountyData.getExported();
+
 
         double[][] Immunity_by_category = findImmuned_ratio(PastData, SeriesData);
 
@@ -389,23 +382,23 @@ public class SEIRModel{
          * Find Immunity Matrix/Array
          */
 
-        for (int Variant = 0; Variant < Parameters.Total_number_of_variants; Variant++) {
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
+        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
+            for (int patient_age = 0; patient_age < 16; patient_age++) {
 
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,1,CountyData.getDataPackByAge()[Variant][1][Patient_Age_Band]);//population
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,3,CountyData.getDataPackByAge()[Variant][3][Patient_Age_Band]);//exposed
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,4,CountyData.getDataPackByAge()[Variant][4][Patient_Age_Band]);//Active_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,5,CountyData.getDataPackByAge()[Variant][5][Patient_Age_Band]);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,6,CountyData.getDataPackByAge()[Variant][6][Patient_Age_Band]);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,7,CountyData.getDataPackByAge()[Variant][7][Patient_Age_Band]);//Critical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,9,CountyData.getDataPackByAge()[Variant][9][Patient_Age_Band]);//Clinical
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,10,CountyData.getDataPackByAge()[Variant][10][Patient_Age_Band]);//Subclinical
+                new_data.setValueDataPackByAge(variant,patient_age,1,CountyData.getDataPackByAge()[variant][1][patient_age]);//population
+                new_data.setValueDataPackByAge(variant,patient_age,3,CountyData.getDataPackByAge()[variant][3][patient_age]);//exposed
+                new_data.setValueDataPackByAge(variant,patient_age,4,CountyData.getDataPackByAge()[variant][4][patient_age]);//Active_cases
+                new_data.setValueDataPackByAge(variant,patient_age,5,CountyData.getDataPackByAge()[variant][5][patient_age]);//Critical
+                new_data.setValueDataPackByAge(variant,patient_age,6,CountyData.getDataPackByAge()[variant][6][patient_age]);//Critical
+                new_data.setValueDataPackByAge(variant,patient_age,7,CountyData.getDataPackByAge()[variant][7][patient_age]);//Critical
+                new_data.setValueDataPackByAge(variant,patient_age,9,CountyData.getDataPackByAge()[variant][9][patient_age]);//Clinical
+                new_data.setValueDataPackByAge(variant,patient_age,10,CountyData.getDataPackByAge()[variant][10][patient_age]);//Subclinical
 
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,18,CountyData.getDataPackByAge()[Variant][18][Patient_Age_Band]);//New_exposed
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,19,CountyData.getDataPackByAge()[Variant][19][Patient_Age_Band]);//New_Active_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,20,CountyData.getDataPackByAge()[Variant][20][Patient_Age_Band]);//New_Critical_cases
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,21,CountyData.getDataPackByAge()[Variant][21][Patient_Age_Band]);//New_resolved
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,22,CountyData.getDataPackByAge()[Variant][22][Patient_Age_Band]);//New_Death
+                new_data.setValueDataPackByAge(variant,patient_age,18,CountyData.getDataPackByAge()[variant][18][patient_age]);//New_exposed
+                new_data.setValueDataPackByAge(variant,patient_age,19,CountyData.getDataPackByAge()[variant][19][patient_age]);//New_Active_cases
+                new_data.setValueDataPackByAge(variant,patient_age,20,CountyData.getDataPackByAge()[variant][20][patient_age]);//New_Critical_cases
+                new_data.setValueDataPackByAge(variant,patient_age,21,CountyData.getDataPackByAge()[variant][21][patient_age]);//New_resolved
+                new_data.setValueDataPackByAge(variant,patient_age,22,CountyData.getDataPackByAge()[variant][22][patient_age]);//New_Death
 
             }
         }
@@ -414,9 +407,9 @@ public class SEIRModel{
 
         double ImmunityMat[] = new double[16];
 
-        for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
-            double ShieldingImm = Immunity_by_category[Patient_Age_Band][0]/CountyData.getDataPackByAge()[0][1][Patient_Age_Band];
-            ImmunityMat[Patient_Age_Band] = 1-ShieldingImm;
+        for (int patient_age = 0; patient_age < 16; patient_age++) {
+            double ShieldingImm = Immunity_by_category[patient_age][0]/CountyData.getDataPackByAge()[0][1][patient_age];
+            ImmunityMat[patient_age] = 1-ShieldingImm;
         }
 
 
@@ -424,25 +417,25 @@ public class SEIRModel{
          *  Patients who are newly infected
          */
 
-        for (int Variant = 0; Variant < Parameters.Total_number_of_variants; Variant++) {
+        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
             double Transmissible[] = new double[16];
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
-                double Age_Band_exposed = CountyData.getDataPackByAge()[Variant][3][Patient_Age_Band] + (Parameters.Workforce_Age_Dist[Patient_Age_Band] * ImportedCases);
-                double EffectiveContacter = Math.round(findEffectiveContacter(SeriesData, Variant, Patient_Age_Band, Age_Band_exposed) + 0.4);
-                Transmissible[Patient_Age_Band] = EffectiveContacter;
+            for (int patient_age = 0; patient_age < 16; patient_age++) {
+                double Age_Band_exposed = CountyData.getDataPackByAge()[variant][3][patient_age] + (Parameters.Workforce_Age_Dist[patient_age] * ImportedCases);
+                double EffectiveContacter = Math.round(findEffectiveContacter(SeriesData, variant, patient_age, Age_Band_exposed) + 0.4);
+                Transmissible[patient_age] = EffectiveContacter;
             }
 
-            double[] DailyinfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, Variant, Mat, tier, 1);
+            double[] DailyinfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, variant, Mat, tier, 1);
 
-            for (int Patient_Age_Band = 0; Patient_Age_Band < 16; Patient_Age_Band++) {
+            for (int patient_age = 0; patient_age < 16; patient_age++) {
 
-                int Age_band_Newinfected = (int) (Math.round(DailyinfectedArray[Patient_Age_Band]));
+                int Age_band_Newinfected = (int) (Math.round(DailyinfectedArray[patient_age]));
 
                 if(Age_band_Newinfected<0){
                     Age_band_Newinfected = 0;
                 }
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,2,CountyData.getDataPackByAge()[Variant][2][Patient_Age_Band]+Age_band_Newinfected);
-                new_data.setValueDataPackByAge(Variant,Patient_Age_Band,17, Age_band_Newinfected);
+                new_data.setValueDataPackByAge(variant,patient_age,2,CountyData.getDataPackByAge()[variant][2][patient_age]+Age_band_Newinfected);
+                new_data.setValueDataPackByAge(variant,patient_age,17, Age_band_Newinfected);
                 Total_Newinfected += Age_band_Newinfected;
             }
         }
@@ -516,12 +509,12 @@ public class SEIRModel{
         return Effective;
     }
 
-    public static double findEffectiveContacter(CountyDataArray DataPack, int Variant, int AgeBand, double exposed){
+    public static double findEffectiveContacter(CountyDataArray DataPack, int variant, int AgeBand, double exposed){
         double Effective;
         double clinical_cases = 0;
         double sub_clinical_cases = 0;
         for (int i = 0; i < Math.min(3,Main.Day-5); i++) {
-            double DailyIncidence = DataPack.getTimeSeries()[Main.Day-5+i].getDataPackByAge()[Variant][18][AgeBand];
+            double DailyIncidence = DataPack.getTimeSeries()[Main.Day-5+i].getDataPackByAge()[variant][18][AgeBand];
             sub_clinical_cases += DailyIncidence * Parameters.SubClinical_Ratio_By_Age[AgeBand];
             clinical_cases += (DailyIncidence - sub_clinical_cases);
         }
@@ -595,7 +588,19 @@ public class SEIRModel{
         return Immunity_level_by_age_and_category;
     }
 
+    public static void set_new_data(Data new_data, int[] indices, double[] data, int variant, int age){
+        if (indices.length==data.length) {
+            for (int i = 0; i < data.length; i++) {
+                new_data.setValueDataPackByAge(variant, age, indices[i], data[i]);
+            }
+        }
+    }
+
     public static void set_new_data(Data new_data, int[] indices, double[] data){
-        
+        if (indices.length==data.length) {
+            for (int i = 0; i < data.length; i++) {
+                new_data.setValueDataPack(indices[i], data[i]);
+            }
+        }
     }
 }
