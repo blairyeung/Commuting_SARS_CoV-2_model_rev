@@ -5,16 +5,16 @@ public class Province {
     public int[] case_migration = null;/**Case migrated from*/
     public int[] case_migrated = null;/**Case migrated from*/
 
-    public int[] County_response_tier = null;
-    public double[] Weekly_Incidence_Rate_By_County = null;
+    public int[] county_response_tier = null;
+    public double[] weekly_incidence_rate_by_county = null;
 
-    public int[][] Case_flux_matrix = null;
-    public int[] Case_flux_matrix_Total = null;
-    public int[][] Reverse_Case_flux_matrix = null;
-    public int[] Reverse_Case_flux_matrix_Total = null;
+    public int[][] worker_outflux_matrix = null;
+    public int[] worker_outflux_total = null;
+    public int[][] worker_influx_matrix = null;
+    public int[] worker_influx_total = null;
 
-    public int[] Importing_Case_flux_matrix_Total = null;
-    public int[] Exporting_Case_flux_matrix_Total = null;
+    public int[] total_influx_cases = null;
+    public int[] total_outflux_cases = null;
 
     public double[] Age_specific_vaccine_dist_common = null;
     public double[] Age_specific_vaccine_dist_urban = null;
@@ -29,15 +29,15 @@ public class Province {
         int Number_of_Counties = CountyDataIO.counties.length;
 
         vaccine_distribution = new int[Number_of_Counties];
-        County_response_tier = new int[Number_of_Counties];
-        Weekly_Incidence_Rate_By_County = new double[Number_of_Counties];
+        county_response_tier = new int[Number_of_Counties];
+        weekly_incidence_rate_by_county = new double[Number_of_Counties];
         case_migration = new int[Number_of_Counties];
         case_migrated = new int[Number_of_Counties];
         counties = new County[Number_of_Counties];
-        Case_flux_matrix_Total = new int[Number_of_Counties];
-        Reverse_Case_flux_matrix_Total = new int[Number_of_Counties];
-        Importing_Case_flux_matrix_Total = new int[Number_of_Counties];
-        Exporting_Case_flux_matrix_Total = new int[Number_of_Counties];
+        worker_outflux_total = new int[Number_of_Counties];
+        worker_influx_total = new int[Number_of_Counties];
+        total_influx_cases = new int[Number_of_Counties];
+        total_outflux_cases = new int[Number_of_Counties];
 
         for (int i = 0; i < Number_of_Counties; i++) {
             vaccine_distribution[i] = 0;
@@ -58,15 +58,15 @@ public class Province {
         int Number_of_Counties = CountyDataIO.counties.length;
 
         vaccine_distribution = new int[Number_of_Counties];
-        County_response_tier = new int[Number_of_Counties];
-        Weekly_Incidence_Rate_By_County = new double[Number_of_Counties];
+        county_response_tier = new int[Number_of_Counties];
+        weekly_incidence_rate_by_county = new double[Number_of_Counties];
         case_migration = new int[Number_of_Counties];
         case_migrated = new int[Number_of_Counties];
         counties = new County[Number_of_Counties];
-        Case_flux_matrix_Total = new int[Number_of_Counties];
-        Reverse_Case_flux_matrix_Total = new int[Number_of_Counties];
-        Importing_Case_flux_matrix_Total = new int[Number_of_Counties];
-        Exporting_Case_flux_matrix_Total = new int[Number_of_Counties];
+        worker_outflux_total = new int[Number_of_Counties];
+        worker_influx_total = new int[Number_of_Counties];
+        total_influx_cases = new int[Number_of_Counties];
+        total_outflux_cases = new int[Number_of_Counties];
 
         for (int i = 0; i < Number_of_Counties; i++) {
             vaccine_distribution[i] = 0;
@@ -91,29 +91,14 @@ public class Province {
 
         int Number_of_Counties = CountyDataIO.counties.length;
 
-        Importing_Case_flux_matrix_Total = new int[Number_of_Counties];
-        Exporting_Case_flux_matrix_Total = new int[Number_of_Counties];
+        total_influx_cases = new int[Number_of_Counties];
+        total_outflux_cases = new int[Number_of_Counties];
 
         case_migration = Commute_IO.getNumber_of_commuters_departing();
         case_migrated = Commute_IO.getNumber_of_commuters_arriving();
 
-        Case_flux_matrix = Commute_IO.getCommuting_matrix();
-        Reverse_Case_flux_matrix = Commute_IO.getReverse_Commuting_matrix();
-
-
-        if(Main.Day%7==1){
-
-            /**
-             * Response tier will update weekly
-             */
-
-            for (int County_Code = 0; County_Code < counties.length; County_Code++) {
-                County_response_tier[County_Code] = FindResponseLevel.getResponseLevel(Weekly_Incidence_Rate_By_County[County_Code]);
-            }
-            Commute_IO.generateWeeklyMatrix(County_response_tier);
-            vaccine_distribution = allocation.getAllocation_by_county();
-        }
-
+        worker_outflux_matrix = Commute_IO.getCommuting_matrix();
+        worker_influx_matrix = Commute_IO.getReverse_Commuting_matrix();
 
         /**
          * Calculate total number of workers
@@ -124,7 +109,6 @@ public class Province {
         Model multi_thread_models[] = new Model[Number_of_Counties];
 
         for (int County_Code = 0; County_Code < Number_of_Counties; County_Code++) {
-
             int Export = case_migration[County_Code];
             int Import = case_migrated[County_Code];
             int Local_worker = Commute_IO.local_worker_matrix[County_Code];
@@ -143,15 +127,15 @@ public class Province {
             }
             returnedpack = multi_thread_models[County_Code].pack;
             int Exported_from_county = returnedpack.getExported_cases();
-            Weekly_Incidence_Rate_By_County[County_Code] = returnedpack.getIncidence_rate();
+            weekly_incidence_rate_by_county[County_Code] = returnedpack.getIncidence_rate();
 
-            Case_flux_matrix_Total[County_Code] = Math.max(Exported_from_county, 0);
+            worker_outflux_total[County_Code] = Math.max(Exported_from_county, 0);
         }
 
         Migration_Assign();
         for (int County_Code = 0; County_Code < Number_of_Counties; County_Code++) {
-            if(Importing_Case_flux_matrix_Total[County_Code]!=0){
-                counties[County_Code].setImporting(Importing_Case_flux_matrix_Total[County_Code]);
+            if(total_influx_cases[County_Code]!=0){
+                counties[County_Code].setImporting(total_influx_cases[County_Code]);
             }
         }
 
@@ -215,7 +199,7 @@ public class Province {
          */
         int Number_of_counties = CountyDataIO.counties.length;
         for (int Depart = 0; Depart < Number_of_counties; Depart++) {
-            int total_cases=Case_flux_matrix_Total[Depart];/** Number of cases leaving this county*/
+            int total_cases=worker_outflux_total[Depart];/** Number of cases leaving this county*/
 
             int total_going_back_to_resident = Commute_IO.getNumber_of_commuters_arriving()[Depart];
 
@@ -228,10 +212,10 @@ public class Province {
                 //System.out.println("Total: " + total_cases);
             }
 
-            int[] Cases_Migrated = Function.RandomAssign(Commute_IO.getCommuting_matrix()[Depart] ,Case_flux_matrix_Total[Depart]);
+            int[] Cases_Migrated = Function.RandomAssign(Commute_IO.getCommuting_matrix()[Depart] ,worker_outflux_total[Depart]);
 
             for (int i = 0; i < Cases_Migrated.length; i++) {
-                Importing_Case_flux_matrix_Total[i] += Cases_Migrated[i];
+                total_influx_cases[i] += Cases_Migrated[i];
             }
         }
     }
@@ -242,14 +226,14 @@ public class Province {
         counties = null;
         case_migration = null;/**Case migrated from*/
         case_migrated = null;/**Case migrated from*/
-        County_response_tier = null;
-        Weekly_Incidence_Rate_By_County = null;
-        Case_flux_matrix = null;
-        Case_flux_matrix_Total = null;
-        Reverse_Case_flux_matrix = null;
-        Reverse_Case_flux_matrix_Total = null;
-        Importing_Case_flux_matrix_Total = null;
-        Exporting_Case_flux_matrix_Total = null;
+        county_response_tier = null;
+        weekly_incidence_rate_by_county = null;
+        worker_outflux_matrix = null;
+        worker_outflux_total = null;
+        worker_influx_matrix = null;
+        worker_influx_total = null;
+        total_influx_cases = null;
+        total_outflux_cases = null;
     }
 
     public int[] getCase_migration() {
@@ -261,7 +245,7 @@ public class Province {
     }
 
     public int[] getCounty_response_tier() {
-        return County_response_tier;
+        return county_response_tier;
     }
 
     public int[] getVaccine_distribution() {
@@ -277,7 +261,7 @@ public class Province {
     }
 
     public void setCounty_response_tier(int[] county_response_tier) {
-        County_response_tier = county_response_tier;
+        county_response_tier = county_response_tier;
     }
 
     public void setVaccine_distribution(int[] vaccine_distribution) {
@@ -293,18 +277,18 @@ public class Province {
     }
 
     public int[] getCase_flux_matrix_Total() {
-        return Case_flux_matrix_Total;
+        return worker_outflux_total;
     }
 
     public int[] getReverse_Case_flux_matrix_Total() {
-        return Reverse_Case_flux_matrix_Total;
+        return worker_influx_total;
     }
 
     public int[][] getCase_flux_matrix() {
-        return Case_flux_matrix;
+        return worker_outflux_matrix;
     }
 
     public int[][] getReverse_Case_flux_matrix() {
-        return Reverse_Case_flux_matrix;
+        return worker_influx_matrix;
     }
 }

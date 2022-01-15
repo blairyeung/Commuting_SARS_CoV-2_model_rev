@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Data {
 
-    final static int day_index = 0;
+    final static int date_index = 0;
     final static int population_index = 1;
     final static int incidence_index = 2;
     final static int exposed_index = 3;
