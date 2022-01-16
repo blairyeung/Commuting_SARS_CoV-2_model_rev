@@ -131,7 +131,7 @@ public class AgeDistribution {
 
     public static int getPatientAge(String name, double[] AgeMatrix, double[] ImmunityMatrix){
         String Country = name.substring(0,2);
-        int ind = IO.Countrycode.indexOf(Country);
+        int ind = Input.Countrycode.indexOf(Country);
         double distribut[] = new double[16];
         for (int i = 0; i < 16; i++) {
             double p  = ImmunityMatrix[i];
@@ -147,7 +147,7 @@ public class AgeDistribution {
         }
         for (int i2 = 0; i2 < 16; i2++) {
             if (Double.toString(AgeMatrix[i2])=="NaN") {
-                distribut = IO.AgeS.get(ind);
+                distribut = Input.AgeS.get(ind);
                 sum = 10000;
                 for (int i = 0; i < distribut.length; i++) {
                     distribut[i] = (int) (distribut[i]*100.0);

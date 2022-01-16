@@ -56,7 +56,7 @@ public class Data {
         }
     }
 
-    public void setDataPack(double[] epidemiological_data_total, double[][][] epidemiological_data_by_age){
+    public void setEpidemiological_data_total(double[] epidemiological_data_total, double[][][] epidemiological_data_by_age){
         this.epidemiological_data_total = epidemiological_data_total;
         this.epidemiological_data_by_age = epidemiological_data_by_age;
     }

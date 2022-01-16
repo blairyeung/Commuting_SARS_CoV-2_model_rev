@@ -2,6 +2,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class SEIRModel{
 
@@ -25,8 +26,6 @@ public class SEIRModel{
         /**
             Import total data from
          */
-
-        Province
 
         int total_population = (int) CountyData.getPopulation();
         int total_infected = (int) CountyData.getIncidence();
@@ -64,9 +63,6 @@ public class SEIRModel{
         int Total_Exported = 0;
 
         int[] case_exportation_by_age = new int[16];
-
-
-        int Dailyvaccinated = 0;
 
         double total_new_daily_incidence = 0;
         double total_new_daily_exposed = 0;
@@ -269,30 +265,7 @@ public class SEIRModel{
         total_vaccinated += Total_vaccinated_today;
         total_immunity_ratio += total_new_daily_incidence;
 
-        new_data.setValueDataPack(0,Main.Day+1);
-        new_data.setValueDataPack(1,population);
-        new_data.setValueDataPack(2,infected);
-        new_data.setValueDataPack(3,exposed);
-        new_data.setValueDataPack(4,active_cases);
-        new_data.setValueDataPack(5,critical_cases);
-        new_data.setValueDataPack(6,resolved);
-        new_data.setValueDataPack(7,deaths);
-        new_data.setValueDataPack(8,vaccinated);
-        new_data.setValueDataPack(9,clinical_cases);
-        new_data.setValueDataPack(10,sub_clinical_cases);
-        new_data.setValueDataPack(11,CFR);
-        new_data.setValueDataPack(12,immunity_ratio);
-        new_data.setValueDataPack(13,tier);
-        new_data.setValueDataPack(14,commute_coeff);
-        new_data.setValueDataPack(15,ImportedCases);
-        new_data.setValueDataPack(16,ExportedCases);
-        new_data.setValueDataPack(17,Dailyinfected);
-        new_data.setValueDataPack(18,Total_Newexposed);
-        new_data.setValueDataPack(19,Total_NewCases);
-        new_data.setValueDataPack(20,Total_NewCritical);
-        new_data.setValueDataPack(21,Total_Newresolved);
-        new_data.setValueDataPack(22,Total_Newdeaths);
-        new_data.setValueDataPack(23,Dailyvaccinated);
+        int[] a = IntStream.range(1, Parameters.DataPackSize).toArray();
 
         return new_data;
     }
@@ -320,7 +293,7 @@ public class SEIRModel{
         double[][] Immunity_by_category = findImmuned_ratio(PastData, SeriesData);
 
         int Type = 0;
-        if(population>=10000){
+        if(total_population>=10000){
             Type = 1;
         }
 
@@ -535,6 +508,7 @@ public class SEIRModel{
     }
 
     public static double[][] findImmuned_ratio(CountyDataArray Pastdata, CountyDataArray DataPack){
+
         /**
          * Function immune
          */
@@ -544,6 +518,9 @@ public class SEIRModel{
          * 16 age bands
          * 2 Types: Mild and severe
          */
+
+        double waning_rate = 1;
+
         for (int Ageband = 0; Ageband < 16; Ageband++) {
             double Immunity_level_against_infection_mild = 0;
             double Immunity_level_against_hospitalization_severe = 0;
@@ -553,6 +530,7 @@ public class SEIRModel{
                 double infected_on_day =  Pastdata.getTimeSeries()[date].getDataPackByAge()[0][17][Ageband];
 
                 int date_index = Math.min(1500,Main.Day + Pastdata.getLength() - date);
+                date_index *= waning_rate;
 
                 Immunity_level_against_infection_mild += vaccinated_on_day * Input.Immunity_wane_mild.get(date_index);
                 Immunity_level_against_infection_mild += infected_on_day * Input.Immunity_wane_mild.get((date_index)/2);

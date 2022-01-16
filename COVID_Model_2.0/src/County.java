@@ -24,7 +24,7 @@ public class County extends Thread{
         System.out.println("Code = " + Code);
         this.Population = Population;
         this.County_Index = Code;
-        County_Data = new Data(Population);
+        County_Data = new Data();
         Series = new CountyDataArray(CountyDataIO.counties[Code].getName(),Parameters.Observation_Range);
         Series.setDataWithinSeries(Main.Day, County_Data);
     }
@@ -39,7 +39,7 @@ public class County extends Thread{
         this.Population = Population;
         this.County_Index = Code;
         this.Past_series = Past_series;
-        County_Data = new Data(Population);
+        County_Data = new Data();
         Series = new CountyDataArray(CountyDataIO.counties[Code].getName(), Parameters.Observation_Range);
         Series.setDataWithinSeries(Main.Day, County_Data);
     }
@@ -55,7 +55,7 @@ public class County extends Thread{
         }
 
         else{
-            County_Data = new Data(Population);
+            County_Data = new Data();
             Series = new CountyDataArray(CountyDataIO.counties[County_Index].getName(), Parameters.Observation_Range);
             Series.setDataWithinSeries(Main.Day, County_Data);
         }
@@ -65,7 +65,7 @@ public class County extends Thread{
 
         if(Main.Day>8){
             for (int i = 0; i < 7; i++) {
-                Incidence += Series.getTimeSeries()[Main.Day-1-i].getDataPack()[18];
+                Incidence += Series.getTimeSeries()[Main.Day-1-i].getEpidemiological_data_total()[18];
             }
         }
 
@@ -79,14 +79,14 @@ public class County extends Thread{
         Series.setDataWithinSeries(Main.Day+1, NewData);
 
         System.out.print(CountyDataIO.counties[County_Index].getName() + "    ");
-        if(NewData.getDataPack()[2]!=50){
-            System.out.print("POP:  "+NewData.getDataPack()[1] + "    ");
-            System.out.println(NewData.getDataPack()[2]);
+        if(NewData.getEpidemiological_data_total()[2]!=50){
+            System.out.print("POP:  "+NewData.getEpidemiological_data_total()[1] + "    ");
+            System.out.println(NewData.getEpidemiological_data_total()[2]);
             //ConsolePrint.PrintCountyInformation(Series.getTimeSeries()[Main.Day]);
         }
         //ConsolePrint.PrintInformation_By_Age(Series.getTimeSeries()[Main.Day]);
 
-        return (new County_Return_Datapack(Incidence_rate, Incidence, (int) NewData.getDataPack()[16]));
+        return (new County_Return_Datapack(Incidence_rate, Incidence, (int) NewData.getEpidemiological_data_total()[16]));
 
     }
 
@@ -97,14 +97,14 @@ public class County extends Thread{
         }
 
         else{
-            County_Data = new Data(Population);
+            County_Data = new Data();
         }
 
         double Incidence = 0;
 
         if(Main.Day>8){
             for (int i = 0; i < 7; i++) {
-                Incidence += Series.getTimeSeries()[Main.Day-1-i].getDataPack()[18];
+                Incidence += Series.getTimeSeries()[Main.Day-1-i].getEpidemiological_data_total()[18];
             }
             Incidence /= Population;
         }
@@ -127,7 +127,7 @@ public class County extends Thread{
 
             if(Main.Day>8){
                 for (int i = 0; i < 7; i++) {
-                    Incidence += Series.getTimeSeries()[Main.Day-1-i].getDataPack()[4];
+                    Incidence += Series.getTimeSeries()[Main.Day-1-i].getEpidemiological_data_total()[4];
                 }
                 Incidence /= Population;
             }

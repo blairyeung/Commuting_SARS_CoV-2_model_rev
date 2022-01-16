@@ -139,7 +139,7 @@ public class Matrix_Stratification {
 
         BufferedReader Codereader = null;
         try {
-            Codereader = new BufferedReader(new FileReader(Parameters.ReadPath+"Country_Files\\Country_Age_Distribution.csv"));
+            Codereader = new BufferedReader(new FileReader(Parameters.Read_path+"Country_Files\\Country_Age_Distribution.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

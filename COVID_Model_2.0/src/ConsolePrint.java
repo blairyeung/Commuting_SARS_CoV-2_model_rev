@@ -3,7 +3,7 @@ public class ConsolePrint {
 
     }
     public static void PrintCountyInformation(Data CountyData){
-        double[] DataPack = CountyData.getDataPack();
+        double[] DataPack = CountyData.getEpidemiological_data_total();
 
         /**Index 0: Day*/
         /**Index 1: Population*/

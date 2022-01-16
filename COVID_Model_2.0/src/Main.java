@@ -17,7 +17,7 @@ public class Main {
         CountyDataIO.CountyData_IO_Input();
         Commute_IO.Commute_IO_Input();
         Ontario_past_data_IO.Ontario_Data_Input();
-        IO.Combined_Input();
+        Input.Combined_Input();
 
         /**
          * Load preset

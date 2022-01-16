@@ -48,7 +48,7 @@ public class Ontario_past_data_IO {
         CountyDataIO.CountyData_IO_Input();
         PHU.PHU_IO_Input();
 
-        Population_ratio_by_PHU = new ArrayList[PHU.Number_of_PHUs];
+        Population_ratio_by_PHU = new ArrayList[PHU.number_of_phu];
 
         Age_specific_data_IO();
         Vaccination_data_IO();
@@ -76,7 +76,7 @@ public class Ontario_past_data_IO {
         ArrayList<String> vaccination_list = new ArrayList<>();
         ArrayList<String> status_list = new ArrayList<>();
 
-        String Path = Parameters.ReadPath + "vaccines_by_age.csv";
+        String Path = Parameters.Read_path + "vaccines_by_age.csv";
         System.out.println(Path);
 
         ArrayList<String> Lines = Function.Buffered_IO(Path);
@@ -203,7 +203,7 @@ public class Ontario_past_data_IO {
         ArrayList<String> vaccination_list = new ArrayList<>();
         ArrayList<String> status_list = new ArrayList<>();
 
-        String Path = Parameters.ReadPath + "cases_by_status_and_phu.csv";
+        String Path = Parameters.Read_path + "cases_by_status_and_phu.csv";
 
         ArrayList<String> Lines = Function.Buffered_IO(Path);
 
@@ -234,7 +234,7 @@ public class Ontario_past_data_IO {
                     continue;
                 }
 
-                String[] PHU_List = PHU.PHUs;
+                String[] PHU_List = PHU.phu_arr;
 
                 int PHU_index = Function.index_of_object_in_array(PHU_code,PHU_List);
 
@@ -255,18 +255,18 @@ public class Ontario_past_data_IO {
 
     public static void to_County(){
 
-        Ontario_past_data_array = new CountyDataArray[CountyDataIO.Counties.length];
+        Ontario_past_data_array = new CountyDataArray[CountyDataIO.counties.length];
 
         int size = Date_index.size();
 
-        for (int County_Code = 0; County_Code < CountyDataIO.Counties.length; County_Code++) {
-            int County_population = CountyDataIO.Counties[County_Code].getPopulation();
+        for (int County_Code = 0; County_Code < CountyDataIO.counties.length; County_Code++) {
+            int County_population = CountyDataIO.counties[County_Code].getPopulation();
             Ontario_past_data_array[County_Code] = new CountyDataArray(size);
             for (int date = 0; date < Date_index.size(); date++) {
                 Data_from_file today_data = Ontario_data.get(date);
-                CountyData data = CountyDataIO.Counties[County_Code];
-                int ID = CountyDataIO.DistrictCode.indexOf(data.getDistrict());
-                int PHU_index =  PHU.PHU_by_Division[ID];
+                CountyData data = CountyDataIO.counties[County_Code];
+                int ID = CountyDataIO.district_code_list.indexOf(data.getDistrict());
+                int PHU_index =  PHU.phu_by_division[ID];
                 double incidence = today_data.getAdjusted_cases_by_PHU(PHU_index);
                 double deaths = today_data.getAdjusted_deaths_by_PHU(PHU_index);
                 double resolved = today_data.getAdjusted_resolved_by_PHU(PHU_index);
@@ -278,7 +278,7 @@ public class Ontario_past_data_IO {
 
                 Adjustment_resolved = Adjustment_cases;
 
-                Data today_county_data = new Data(County_population);
+                Data today_county_data = new Data();
                 for (int Age_band = 0; Age_band < 16; Age_band++) {
                     double Vaccinated_one_dose_age_band = today_data.getAdjusted_percentage_vaccinated_one_dose()[Age_band];
                     double Vaccinated_two_dose_age_band = today_data.getAdjusted_percentage_vaccinated_two_dose()[Age_band];
@@ -315,7 +315,7 @@ public class Ontario_past_data_IO {
 
 
     public static void Age_specific_data_IO(){
-        String Path = Parameters.ReadPath + "Ontario_population_by_age.csv";
+        String Path = Parameters.Read_path + "Ontario_population_by_age.csv";
         ArrayList<String> Buffer = Function.Buffered_IO(Path,false);
         ArrayList<Double> Population_by_age_band = new ArrayList<>();
 
