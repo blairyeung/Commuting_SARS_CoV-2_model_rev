@@ -395,15 +395,6 @@ public class Ontario_past_data_IO {
 
             for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
                 for (int Age_band = 0; Age_band < Parameters.AgeBand.length; Age_band++) {
-                    /*
-                    data.setValueDataPackByAge(variant,Age_band,2,((int) Math.round(data.getDataPackByAge()[variant][17][Age_band])));//Set incidence
-                    data.setValueDataPackByAge(variant,Age_band,3,((int) Math.round(data.getDataPackByAge()[variant][18][Age_band])));//Set exposed
-                    data.setValueDataPackByAge(variant,Age_band,4,((int) Math.round(data.getDataPackByAge()[variant][19][Age_band])));//Set active cases
-                    data.setValueDataPackByAge(variant,Age_band,6,((int) Math.round(data.getDataPackByAge()[variant][20][Age_band])));//Set resolved
-                    data.setValueDataPackByAge(variant,Age_band,7,((int) Math.round(data.getDataPackByAge()[variant][22][Age_band])));//Set deaths
-                    data.setValueDataPackByAge(variant,Age_band,8,((int) Math.round(data.getDataPackByAge()[variant][23][Age_band])));//Set vaccinated one dose
-                    */
-
                     data.setValueDataPackByAge(variant,Age_band,17,((int) Math.round(data.getDataPackByAge()[variant][17][Age_band])));//Set incidence
                     data.setValueDataPackByAge(variant,Age_band,18,((int) Math.round(data.getDataPackByAge()[variant][18][Age_band])));//Set exposed
                     data.setValueDataPackByAge(variant,Age_band,19,((int) Math.round(data.getDataPackByAge()[variant][19][Age_band])));//Set active cases
@@ -411,18 +402,6 @@ public class Ontario_past_data_IO {
                     data.setValueDataPackByAge(variant,Age_band,22,((int) Math.round(data.getDataPackByAge()[variant][22][Age_band])));//Set deaths
                     data.setValueDataPackByAge(variant,Age_band,23,((int) Math.round(data.getDataPackByAge()[variant][23][Age_band])));//Set vaccinated one dose
                     data.setValueDataPackByAge(variant,Age_band,24,((int) Math.round(data.getDataPackByAge()[variant][23][Age_band])));//Set vaccinated one dose
-                    //data.addValueDataPackByAge(variant,Age_band,8,((int) Math.round(data.getDataPackByAge()[variant][24][Age_band])));//Set vaccinated two dose
-
-                    /*
-                    data.addValueDataPackByAge(variant,Age_band,2,((int) Math.round(yesterday_data.getDataPackByAge()[variant][2][Age_band])));//Set incidence
-                    data.addValueDataPackByAge(variant,Age_band,3,((int) Math.round(yesterday_data.getDataPackByAge()[variant][3][Age_band])));//Set exposed
-                    data.addValueDataPackByAge(variant,Age_band,4,((int) Math.round(yesterday_data.getDataPackByAge()[variant][4][Age_band])));//Set active cases
-                    data.addValueDataPackByAge(variant,Age_band,6,((int) Math.round(yesterday_data.getDataPackByAge()[variant][6][Age_band])));//Set resolved
-                    data.addValueDataPackByAge(variant,Age_band,7,((int) Math.round(yesterday_data.getDataPackByAge()[variant][7][Age_band])));//Set deaths
-                    data.addValueDataPackByAge(variant,Age_band,8,((int) Math.round(yesterday_data.getDataPackByAge()[variant][8][Age_band])));//Set vaccinated one dose
-                    data.addValueDataPackByAge(variant,Age_band,8,((int) Math.round(yesterday_data.getDataPackByAge()[variant][8][Age_band])));//Set vaccinated two dose
-
-                     */
                 }
             }
             data.reCalculate();
@@ -443,10 +422,9 @@ public class Ontario_past_data_IO {
     }
 
     public static void Print_past_data(){
-        /*for (int i = 0; i < Ontario_past_data_array.length; i++) {
+        for (int i = 0; i < Ontario_past_data_array.length; i++) {
             County c = new County(0,i,Ontario_past_data_array[i]);
             c.PrintPastFile(new Trail(0,0));
-        }*/
-
+        }
     }
 }

@@ -138,9 +138,9 @@ public class County extends Thread{
             this.Tier = FindResponseLevel.getResponseLevel(Incidence);
 
 
-            Data NewData = SEIRModel.NightModel(Past_series, Series, County_Data, Imported, Exported, Tier, County_Index, VaccineAllocated, Age_specific_vaccine_distribution);
+            //Data NewData = SEIRModel.NightModel(Past_series, Series, County_Data, Imported, Exported, Tier, County_Index, VaccineAllocated, Age_specific_vaccine_distribution);
 
-            Series.setDataWithinSeries(Main.Day+1, NewData);
+            //Series.setDataWithinSeries(Main.Day+1, NewData);
 
         //ConsolePrint.PrintCountyInformation(Series.getTimeSeries()[Main.Day]);
 

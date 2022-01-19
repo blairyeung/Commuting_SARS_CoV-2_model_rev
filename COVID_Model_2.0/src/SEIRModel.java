@@ -24,7 +24,7 @@ public class SEIRModel{
     public static Data RunModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int Responsetier, int County, int Local_workers, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
 
         /**
-            Import total data from
+         * Epidemiological parameter declaration
          */
 
         int total_population = (int) CountyData.getPopulation();
@@ -49,12 +49,16 @@ public class SEIRModel{
             Type = 1;
         }
 
-        double[][] Work = (double[][]) Input.MatricesByCategory[Type][0].get(Input.Countrycode.indexOf("CA"));
-        double[][] School = (double[][]) Input.MatricesByCategory[Type][1].get(Input.Countrycode.indexOf("CA"));
-        double[][] Home = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
-        double[][] Other = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
+        /**
+         * Contact matrices
+         */
 
-        double[][][] contact_matrices = {Work,School,Home,Other};
+        double[][] work_matrix = (double[][]) Input.MatricesByCategory[Type][0].get(Input.Countrycode.indexOf("CA"));
+        double[][] school_matrix = (double[][]) Input.MatricesByCategory[Type][1].get(Input.Countrycode.indexOf("CA"));
+        double[][] home_matrix = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
+        double[][] other_matrix = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
+
+        double[][][] contact_matrices = {work_matrix,school_matrix,home_matrix,other_matrix};
 
         /**
          * Imported_cases will only increase the number of potential contacters, rather than infected
@@ -74,6 +78,10 @@ public class SEIRModel{
         double total_daily_removed_exposed = 0;
         double total_daily_removed_cases = 0;
         double total_daily_removed_critical = 0;
+
+        /**
+         * Epidemiological parameter declaration End
+         */
 
         double[][] immunity_by_category = findImmuned_ratio(PastData, SeriesData);
 
@@ -103,7 +111,6 @@ public class SEIRModel{
                 double new_daily_resolved = 0;
                 double new_daily_deaths = 0;
 
-                double z = 0;
                 double new_removed_exposed = 0;
                 double new_removed_cases = 0;
                 double new_removed_critical = 0;
@@ -268,206 +275,6 @@ public class SEIRModel{
         int[] a = IntStream.range(1, Parameters.DataPackSize).toArray();
 
         return new_data;
-    }
-
-    public static Data NightModel(CountyDataArray PastData,CountyDataArray SeriesData,Data CountyData, int Imported, int Exported, int Responsetier, int County, int Planned_vaccination, double[][] Age_specific_vaccine_distribution){
-
-        int total_population = (int) CountyData.getPopulation();
-        int total_infected = (int) CountyData.getIncidence();
-        int total_exposed = (int) CountyData.getExposed();
-        int total_active_cases = (int) CountyData.getActive();
-        int total_critical_cases = (int) CountyData.getCritical();
-        int total_resolved = (int) CountyData.getResolved();
-        int total_deaths = (int) CountyData.getDeaths();
-        int total_vaccinated = (int) CountyData.getVaccinated();
-        int total_clinical_cases = (int) CountyData.getClinical();
-        int total_sub_clinical_cases = (int) CountyData.getSub_clinical();
-        double total_CFR = CountyData.getCFR();
-        double total_immunity_ratio = CountyData.getImmunity();
-        int total_tier = (int) CountyData.getTier();
-        int total_commute_coeff = (int) CountyData.getCommute_coeff();
-        int total_imported_cases = (int) CountyData.getImported();
-        int total_exported_cases = (int) CountyData.getExported();
-
-
-        double[][] Immunity_by_category = findImmuned_ratio(PastData, SeriesData);
-
-        int Type = 0;
-        if(total_population>=10000){
-            Type = 1;
-        }
-
-        double[][] Work = (double[][]) Input.MatricesByCategory[Type][0].get(Input.Countrycode.indexOf("CA"));
-        double[][] School = (double[][]) Input.MatricesByCategory[Type][1].get(Input.Countrycode.indexOf("CA"));
-        double[][] Home = (double[][]) Input.MatricesByCategory[Type][2].get(Input.Countrycode.indexOf("CA"));
-        double[][] Other = (double[][]) Input.MatricesByCategory[Type] [3].get(Input.Countrycode.indexOf("CA"));
-
-        double[][][] Mat = {Work,School,Home,Other};
-
-        /**
-         * Imported_cases will only increase the number of potential contacters, rather tha infected
-         */
-
-        ExportedCases = 0;
-        int Total_Exported = 0;
-
-        int Case_Exportation_Age_Band[] = new int[16];
-
-        int Dailyinfected = (int) CountyData.getEpidemiological_data_total()[17];
-        int Dailyexposed = (int) CountyData.getEpidemiological_data_total()[18];
-        int DailyAcvtiveCases = (int) CountyData.getEpidemiological_data_total()[19];
-        int DailyCritical = (int) CountyData.getEpidemiological_data_total()[20];
-        int Dailyresolved = (int) CountyData.getEpidemiological_data_total()[21];
-        int Dailydeaths = (int) CountyData.getEpidemiological_data_total()[22];
-        int Dailyvaccinated= (int) CountyData.getEpidemiological_data_total()[23];
-
-        double Total_Newinfected = 0;
-        double Total_Newexposed = 0;
-        double Total_NewCases = 0;
-        double Total_NewCritical = 0;
-        double Total_Newresolved = 0;
-        double Total_Newdeaths = 0;
-
-        double Total_Removedexposed = 0;
-        double Total_RemovedCases = 0;
-        double Total_RemovedCritical = 0;
-        //double Total_Removedresolved = 0;
-
-        clinical_cases = 0;
-        sub_clinical_cases = 0;
-        Dailyinfected = 0;
-
-        /**
-         * Process patients who are already infected
-         */
-
-
-        Data new_data = new Data();
-
-
-        /**
-         * Find Immunity Matrix/Array
-         */
-
-        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
-            for (int patient_age = 0; patient_age < 16; patient_age++) {
-
-                new_data.setValueDataPackByAge(variant,patient_age,1,CountyData.getDataPackByAge()[variant][1][patient_age]);//population
-                new_data.setValueDataPackByAge(variant,patient_age,3,CountyData.getDataPackByAge()[variant][3][patient_age]);//exposed
-                new_data.setValueDataPackByAge(variant,patient_age,4,CountyData.getDataPackByAge()[variant][4][patient_age]);//Active_cases
-                new_data.setValueDataPackByAge(variant,patient_age,5,CountyData.getDataPackByAge()[variant][5][patient_age]);//Critical
-                new_data.setValueDataPackByAge(variant,patient_age,6,CountyData.getDataPackByAge()[variant][6][patient_age]);//Critical
-                new_data.setValueDataPackByAge(variant,patient_age,7,CountyData.getDataPackByAge()[variant][7][patient_age]);//Critical
-                new_data.setValueDataPackByAge(variant,patient_age,9,CountyData.getDataPackByAge()[variant][9][patient_age]);//Clinical
-                new_data.setValueDataPackByAge(variant,patient_age,10,CountyData.getDataPackByAge()[variant][10][patient_age]);//Subclinical
-
-                new_data.setValueDataPackByAge(variant,patient_age,18,CountyData.getDataPackByAge()[variant][18][patient_age]);//New_exposed
-                new_data.setValueDataPackByAge(variant,patient_age,19,CountyData.getDataPackByAge()[variant][19][patient_age]);//New_Active_cases
-                new_data.setValueDataPackByAge(variant,patient_age,20,CountyData.getDataPackByAge()[variant][20][patient_age]);//New_Critical_cases
-                new_data.setValueDataPackByAge(variant,patient_age,21,CountyData.getDataPackByAge()[variant][21][patient_age]);//New_resolved
-                new_data.setValueDataPackByAge(variant,patient_age,22,CountyData.getDataPackByAge()[variant][22][patient_age]);//New_Death
-
-            }
-        }
-
-
-
-        double ImmunityMat[] = new double[16];
-
-        for (int patient_age = 0; patient_age < 16; patient_age++) {
-            double ShieldingImm = Immunity_by_category[patient_age][0]/CountyData.getDataPackByAge()[0][1][patient_age];
-            ImmunityMat[patient_age] = 1-ShieldingImm;
-        }
-
-
-        /**
-         *  Patients who are newly infected
-         */
-
-        for (int variant = 0; variant < Parameters.Total_number_of_variants; variant++) {
-            double Transmissible[] = new double[16];
-            for (int patient_age = 0; patient_age < 16; patient_age++) {
-                double Age_Band_exposed = CountyData.getDataPackByAge()[variant][3][patient_age] + (Parameters.Workforce_Age_Dist[patient_age] * ImportedCases);
-                double EffectiveContacter = Math.round(findEffectiveContacter(SeriesData, variant, patient_age, Age_Band_exposed) + 0.4);
-                Transmissible[patient_age] = EffectiveContacter;
-            }
-
-            double[] DailyinfectedArray = AgeDistribution.getNew_Incidence(Transmissible, ImmunityMat, variant, Mat, tier, 1);
-
-            for (int patient_age = 0; patient_age < 16; patient_age++) {
-
-                int Age_band_Newinfected = (int) (Math.round(DailyinfectedArray[patient_age]));
-
-                if(Age_band_Newinfected<0){
-                    Age_band_Newinfected = 0;
-                }
-                new_data.setValueDataPackByAge(variant,patient_age,2,CountyData.getDataPackByAge()[variant][2][patient_age]+Age_band_Newinfected);
-                new_data.setValueDataPackByAge(variant,patient_age,17, Age_band_Newinfected);
-                Total_Newinfected += Age_band_Newinfected;
-            }
-        }
-
-        Dailyinfected += Math.round(Total_Newinfected);
-        infected += Dailyinfected;
-
-
-        /**
-         * Vaccination
-         */
-
-        int Total_vaccinated_today = 0;
-
-        for (int Age_band = 0; Age_band < 16; Age_band++) {
-
-            /**
-             * If an age band has more than 80% of its total population infected...
-             */
-
-            double Percentage_vaccinated = (CountyData.getDataPackByAge()[0][8][Age_band])/CountyData.getDataPackByAge()[0][1][Age_band];
-
-            int Age_band_vaccinated = (int) Math.round(Age_specific_vaccine_distribution[Type][Age_band] * Planned_vaccination);
-            if(Percentage_vaccinated>=0.8){
-                Age_band_vaccinated = 0;
-            }
-
-            Total_vaccinated_today += Age_band_vaccinated;
-
-            new_data.setValueDataPackByAge(0,Age_band,23, CountyData.getDataPackByAge()[0][23][Age_band]+ Age_band_vaccinated);
-            new_data.setValueDataPackByAge(0,Age_band,12,Age_band_vaccinated + CountyData.getDataPackByAge()[0][12][Age_band]);
-            new_data.setValueDataPackByAge(0,Age_band,8,Age_band_vaccinated + CountyData.getDataPackByAge()[0][8][Age_band]);
-        }
-
-        total_vaccinated += Total_vaccinated_today;
-        Dailyvaccinated += Total_vaccinated_today;
-
-        immunity_ratio += Total_Newinfected;
-
-        new_data.setValueDataPack(0,Main.Day+1);
-        new_data.setValueDataPack(1,population);
-        new_data.setValueDataPack(2,infected);
-        new_data.setValueDataPack(3,CountyData.getEpidemiological_data_total()[3]);
-        new_data.setValueDataPack(4,CountyData.getEpidemiological_data_total()[4]);
-        new_data.setValueDataPack(5,CountyData.getEpidemiological_data_total()[5]);
-        new_data.setValueDataPack(6,CountyData.getEpidemiological_data_total()[6]);
-        new_data.setValueDataPack(7,CountyData.getEpidemiological_data_total()[7]);
-        new_data.setValueDataPack(8,vaccinated);
-        new_data.setValueDataPack(9,CountyData.getEpidemiological_data_total()[9]);
-        new_data.setValueDataPack(10,CountyData.getEpidemiological_data_total()[10]);
-        new_data.setValueDataPack(11,CFR);
-        new_data.setValueDataPack(12,CountyData.getEpidemiological_data_total()[12]);
-        new_data.setValueDataPack(13,tier);
-        new_data.setValueDataPack(14,commute_coeff);
-        new_data.setValueDataPack(15,CountyData.getEpidemiological_data_total()[15]);
-        new_data.setValueDataPack(16,CountyData.getEpidemiological_data_total()[16]);
-        new_data.setValueDataPack(17,Dailyinfected);
-        new_data.setValueDataPack(18,Total_Newexposed);
-        new_data.setValueDataPack(19,Total_NewCases);
-        new_data.setValueDataPack(20,Total_NewCritical);
-        new_data.setValueDataPack(21,Total_Newresolved);
-        new_data.setValueDataPack(22,Total_Newdeaths);
-        new_data.setValueDataPack(23,Dailyvaccinated);
-
-        return CountyData;
     }
 
     public static double findEffectiveContacter(double exposed, double clinical_cases, double sub_clinical_cases){
